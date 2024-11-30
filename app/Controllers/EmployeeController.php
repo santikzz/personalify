@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\EmployeeModel;
 
-
 class EmployeeController extends BaseController
 {
     private $model = new EmployeeModel();

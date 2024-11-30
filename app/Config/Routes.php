@@ -9,8 +9,11 @@ use App\Filters\AuthFilter;
  * @var RouteCollection $routes
  */
 
-$routes->get('/', 'Home::index');
+$routes->get('login', 'AdministratorController::login');
 
+/**
+ * Group routes for API endpoints
+ */
 $routes->group('api',  function ($routes) {
 
     $routes->get('health', function () {
@@ -22,23 +25,21 @@ $routes->group('api',  function ($routes) {
     $routes->post('manager/register', 'AuthController::reigsterManager');
     $routes->post('manager/login', 'AuthController::managerLogin');
 
+    /**
+     * Group routes for administrators
+     */
     $routes->group('admin', ['filter' => 'authfilter:administrator'], function ($routes) {
-        // administrator routes..
-        $routes->get('test', function() { return "YOU ARE AN ADMIN!"; });
+        $routes->get('test', function () {
+            return "YOU ARE AN ADMIN!";
+        });
     });
 
+    /**
+     * Group routes for managers
+     */
     $routes->group('manager', ['filter' => 'authfilter:manager'], function ($routes) {
-        // manager routes..
-        $routes->get('test', function() { return "YOU ARE A MANAGER!"; });
+        $routes->get('test', function () {
+            return "YOU ARE A MANAGER!";
+        });
     });
-
-    $routes->group('*', ['filter' => AuthFilter::class], function ($routes) {
-
-        $routes->get('employee', EmployeeController::class . '::index');
-        $routes->post('employee', EmployeeController::class . '::store');
-        $routes->put('employee', EmployeeController::class . '::update');
-        // $routes->delete('employee', 'EmployeeController::delete');
-
-    });
-
 });
