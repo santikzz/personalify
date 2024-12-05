@@ -11,7 +11,8 @@ class CorsFilter implements FilterInterface
     public function before(RequestInterface $request, $arguments = null)
     {
         // Add CORS headers
-        header('Access-Control-Allow-Origin: *'); // Replace * with your specific domain in production
+        $clientURL = rtrim(env('app.clientURL', '*'), '/');
+        header('Access-Control-Allow-Origin: ' . $clientURL);
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, PATCH, DELETE');
         header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 

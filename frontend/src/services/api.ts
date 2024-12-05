@@ -86,7 +86,7 @@ export const updateEmployee = async (employeeId: string, employeeData: any) => {
 /*
  * ================ CLIENTS ENDPOINTS ================
 */
-export const fetchClients = async (search: string) => {
+export const fetchClients = async (search?: string) => {
     const endpoint: string = '/api/admin/clients';
     const params = { search: '' };
     if (search) params.search = search;

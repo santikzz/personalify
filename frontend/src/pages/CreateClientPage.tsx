@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -16,33 +16,36 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import MainWrapper from "@/components/MainWrapper"
+import { useCreateClient } from "@/hooks/queries/clients"
 
 const formSchema = z.object({
   name: z.string(),
-  surname: z.string(),
-  dni: z.string()
 });
 
 export const CreateClientPage = () => {
 
+  /*
+  * useCreateClient() is a custom react-query hook that returns an object with a function to create	a client. 
+  * mutate: createClient is an alias we can use later to call the function.
+  */
+  const { mutate: createClient, isLoading, isSuccess, isError } = useCreateClient();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+  });
 
-  })
-
+  /*
+  * onSubmit() will be called when the form is submitted
+  * and will call the createClient function with the form values
+  */
   function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
-    } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
-    }
+    createClient(values);
   }
+
+  useEffect(() => {
+    if (isError) alert("Error creating client");
+    if (isSuccess) alert("Client created successfully");
+  }, [isError, isSuccess]);
 
   return (
 
@@ -69,44 +72,7 @@ export const CreateClientPage = () => {
               </FormItem>
             )}
           />
-
-          <FormField
-            control={form.control}
-            name="surname"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Apellido</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="apellido"
-
-                    type="text"
-                    {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="dni"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>DNI</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="dni"
-
-                    type="text"
-                    {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          
           <Button type="submit">Submit</Button>
         </form>
       </Form>

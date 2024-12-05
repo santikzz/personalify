@@ -6,7 +6,12 @@ use App\Models\ClientModel;
 
 class ClientController extends BaseController
 {
-    private $model = new ClientModel();
+    private $model;
+
+    public function __construct()
+    {
+        $this->model = new ClientModel();
+    }
 
     public function index()
     {

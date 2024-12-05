@@ -1,44 +1,47 @@
-import { useState } from "react"
-import { toast } from "sonner"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import MainWrapper from "@/components/MainWrapper"
-import { createEmployee } from "@/services/api"
 
+import MainWrapper from "@/components/MainWrapper"
+import { useCreateEmployee } from "@/hooks/queries/employees"
+
+/*
+* formSchema defines the shape of the form and its values
+*/
 const formSchema = z.object({
   name: z.string(),
   qr_code: z.string(),
 });
 
 export const CreateEmployeePage = () => {
+  /*
+  * useCreateEmployee() is a custom react-query hook that returns an object with a function to create	an employee. 
+  * mutate: createEmployee is an alias we can use later to call the function.
+  */
+  const { mutate: createEmployee, isLoading, isSuccess, isError } = useCreateEmployee();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+  });
 
-  })
-
+  /*
+  * onSubmit() will be called when the form is submitted
+  * and will call the createEmployee function with the form values
+  */
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
-    const response = await createEmployee(values);
-    alert(response);
-
+    createEmployee(values);
   }
 
-  return (
+  useEffect(() => {
+    if (isError) alert("Error creating employee");
+    if (isSuccess) alert("Employee created successfully");
+  }, [isError, isSuccess]);
 
+  return (
     <MainWrapper>
 
       <Form {...form}>
@@ -53,11 +56,9 @@ export const CreateEmployeePage = () => {
                 <FormControl>
                   <Input
                     placeholder="nombre"
-
                     type="text"
                     {...field} />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -72,11 +73,9 @@ export const CreateEmployeePage = () => {
                 <FormControl>
                   <Input
                     placeholder="code"
-
                     type="text"
                     {...field} />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -86,5 +85,5 @@ export const CreateEmployeePage = () => {
       </Form>
 
     </MainWrapper>
-  )
+  );
 }
