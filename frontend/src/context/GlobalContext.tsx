@@ -1,76 +1,80 @@
-import { createContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { useMediaQuery } from "@/hooks/use-media-query"
-// import { api } from "@/services/Api";
-
-
-interface GlobalProviderProps {
-    children: React.ReactNode;
-}
+import { fetchSelf, setAuthToken } from "@/services/api";
 
 interface GlobalContextType {
-    loading: boolean;
     user: any;
+    setUser: (user: any) => void;
     isAuthenticated: boolean;
     isDesktop: boolean;
+    storeSession: (token: string) => void;
+    clearSession: () => void;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
-const GlobalProvider = ({ children }: GlobalProviderProps) => {
+export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [user, setUser] = useState<any>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
 
-    // useEffect(() => {
-    //     const initalizateAuth = async () => {
-    //         const token = localStorage.getItem('token');
-    //         if (token) {
-    //             login(token);
-    //         }
-    //     }
-    //     initalizateAuth();
-    //     setLoading(false);
-    // }, [])
+    useEffect(() => {
+        const checkStoredSession = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                storeSession(token);
+            }
+        }
+        checkStoredSession();
+        setLoading(false);
+    }, [])
 
-    // const login = async (token) => {
-    //     localStorage.setItem('token', token);
-    //     setIsAuthenticated(true);
-    //     api.setAuthToken(token);
-    //     try {
-    //         const environment = await api.getEnvironmentFull();
-    //         setUser(environment.user);
-    //         setOwnedJoinedGroups(environment.groups);
-    //     } catch (error) {
-    //         console.error(error);
-    //         localStorage.removeItem('token');
-    //         api.setAuthToken(null);
-    //         setIsAuthenticated(false);
-    //     }
-    // }
+    const storeSession = async (token: string) => {
+        localStorage.setItem('token', token);
+        setIsAuthenticated(true);
+        setAuthToken(token);
+        try {
+            const self = await fetchSelf();
+            setUser(self);
+        } catch (error) {
+            console.error(error);
+            localStorage.removeItem('token');
+            setAuthToken(null);
+            setIsAuthenticated(false);
+        }
+    }
 
-    // const logout = () => {
-    //     setIsAuthenticated(false);
-    //     setUser(null);
-    //     setOwnedJoinedGroups(null);
-    //     api.setAuthToken(null);
-    //     localStorage.removeItem('token');
-    // }
+    const clearSession = () => {
+        setIsAuthenticated(false);
+        setUser(null);
+        setAuthToken(null);
+        localStorage.removeItem('token');
+    }
 
     if (loading) return <div>loading...</div>;
 
     return (
         <GlobalContext.Provider value={{
-            loading,
             user,
+            setUser,
             isAuthenticated,
-            isDesktop
+            isDesktop,
+            storeSession,
+            clearSession,
         }}>
             {children}
         </GlobalContext.Provider>
     );
+
 };
 
-export { GlobalProvider, GlobalContext };
+export const useGlobalContext = () => {
+    const context = useContext(GlobalContext);
+    if (context === undefined) {
+        throw new Error('useGlobalContext must be used within a GlobalProvider');
+    }
+    return context;
+}

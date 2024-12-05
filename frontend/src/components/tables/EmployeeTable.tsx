@@ -14,20 +14,19 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-interface Employee {
-    id: number;
-    name: string;
-    dni: string;
-}
+import { EmployeeRow } from "@/types/Employee.types";
 
-export const EmployeeTable = ({ data }: { data: Employee[] }) => {
+/*
+* This table is used in the /personal page to display a list of employees and its CRUD options
+*/
+export const EmployeeTable = ({ data }: { data: EmployeeRow[] }) => {
 
     const [sorting, setSorting] = useState<SortingState>([]);
     const [search, setSearch] = useState<string>("");
 
     const navigate = useNavigate();
 
-    const columns: ColumnDef<Employee>[] = [
+    const columns: ColumnDef<EmployeeRow>[] = [
         {
             header: "Nombre",
             accessorKey: "name",
@@ -88,7 +87,7 @@ export const EmployeeTable = ({ data }: { data: Employee[] }) => {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className="cursor-pointer odd:bg-gray-100 dark:odd:bg-neutral-900 hover:bg-gray-200 dark:hover:bg-neutral-800"
+                                    className="cursor-pointer hover:bg-gray-200 dark:hover:bg-neutral-800"
                                     onClick={() => navigate(`/employee/${row.original.id}`)}
                                     data-state={row.getIsSelected() && "selected"}
                                 >

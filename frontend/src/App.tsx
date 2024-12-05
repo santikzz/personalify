@@ -9,6 +9,8 @@ import { EmployeeListPage } from '@/pages/EmployeeListPage';
 import { CreateEmployeePage } from '@/pages/CreateEmployeePage';
 import { CreateClientPage } from './pages/CreateClientPage';
 import { ClientPage } from './pages/ClientPage';
+import { LoginPage } from './pages/LoginPage';
+import { ProtectedRoute } from './utils/ProtectedRoute';
 
 function App() {
 
@@ -19,15 +21,16 @@ function App() {
         <Router>
 
           <Routes>
-            <Route path="/" element={<HomePage />} />
-            
-            <Route path="/personal" element={<EmployeeListPage />} />  
-            <Route path="/employee/:employeeId" element={<EmployeePage />} />
-            <Route path="/newemployee" element={<CreateEmployeePage />} />
+            <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+            <Route path="/login" element={<LoginPage />} />
 
-            <Route path="/clients" element={<ClientListPage />} />
-            <Route path="/client/:clientId" element={<ClientPage />} />
-            <Route path="/newclient" element={<CreateClientPage />} />
+            <Route path="/personal" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
+            <Route path="/employee/:employeeId" element={<ProtectedRoute><EmployeePage /></ProtectedRoute>} />
+            <Route path="/newemployee" element={<ProtectedRoute><CreateEmployeePage /></ProtectedRoute>} />
+
+            <Route path="/clients" element={<ProtectedRoute><ClientListPage /></ProtectedRoute>} />
+            <Route path="/client/:clientId" element={<ProtectedRoute><ClientPage /></ProtectedRoute>} />
+            <Route path="/newclient" element={<ProtectedRoute><CreateClientPage /></ProtectedRoute>} />
 
           </Routes>
 

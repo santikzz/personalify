@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import MainWrapper from "@/components/MainWrapper"
+import { createEmployee } from "@/services/api"
 
 const formSchema = z.object({
   name: z.string(),
-  surname: z.string(),
-  dni: z.string()
+  qr_code: z.string(),
 });
 
 export const CreateEmployeePage = () => {
@@ -30,18 +30,11 @@ export const CreateEmployeePage = () => {
 
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>
-      );
-    } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
-    }
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+
+    const response = await createEmployee(values);
+    alert(response);
+
   }
 
   return (
@@ -72,32 +65,13 @@ export const CreateEmployeePage = () => {
 
           <FormField
             control={form.control}
-            name="surname"
+            name="qr_code"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Apellido</FormLabel>
+                <FormLabel>QR CODE</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="apellido"
-
-                    type="text"
-                    {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="dni"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>DNI</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="dni"
+                    placeholder="code"
 
                     type="text"
                     {...field} />

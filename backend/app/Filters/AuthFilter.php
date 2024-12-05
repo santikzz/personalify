@@ -42,6 +42,7 @@ class AuthFilter implements FilterInterface
         }
 
         $request->session = $session; // Inject the session into the request object
+        return $request;
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)

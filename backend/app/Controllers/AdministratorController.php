@@ -6,15 +6,20 @@ use App\Models\AdministratorModel;
 
 class AdministratorController extends BaseController
 {
-    // private $model = new AdministratorModel();
+    
+    public function self() {
+        
+        $model = new AdministratorModel();
+        $user_id = $this->request->session['user_id'];
+        $user = $model->find($user_id);
 
-    public function login()
-    {
-        return view('login');
-    }
+        if(!$user){
+            return $this->response->setStatusCode(404)->setJSON(['message' => 'User not found']);
+        }
 
-    public function index()
-    {
-        return view('dashboard');
+        unset($user['password_hash']);
+        unset($user['disabled']);
+
+        return $this->response->setJSON($user)->setStatusCode(200);
     }
 }

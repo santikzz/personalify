@@ -1,10 +1,32 @@
-// import EmployeeTable from "@/components/tables/EmployeeLogTable";
-import MainWrapper from "@/components/MainWrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Calendar, Search } from "lucide-react";
+import { Calendar } from "lucide-react";
+import MainWrapper from "@/components/MainWrapper";
+import { EmployeeLogTable } from "@/components/tables/EmployeeLogTable";
+
+import { EmployeeLog } from "@/types/Employee.types";
+import { useGlobalContext } from "@/context/GlobalContext";
+import { useEffect } from "react";
+
+const data: EmployeeLog[] = [
+    {
+        id: 1,
+        name: "John Doe",
+        date: "24/11/2021",
+        check_in_time: "08:00",
+        check_out_time: "17:00",
+        manager: "Jane Doe",
+        location: "Calle 123, Ciudad",
+    }
+]
 
 export const HomePage = () => {
+
+    const { user } = useGlobalContext();
+
+    useEffect(() => {
+        console.log(user);
+    }, [user]);
 
     return (
         <MainWrapper>
@@ -26,9 +48,7 @@ export const HomePage = () => {
                 </div>
 
             </div>
-
-            {/* <EmployeeTable /> */}
-
+            <EmployeeLogTable data={data} />
         </MainWrapper>
     )
 }

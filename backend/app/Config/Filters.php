@@ -3,8 +3,9 @@
 namespace Config;
 
 use App\Filters\AuthFilter;
+use App\Filters\CorsFilter;
+// use CodeIgniter\Filters\Cors;
 use CodeIgniter\Config\Filters as BaseFilters;
-use CodeIgniter\Filters\Cors;
 use CodeIgniter\Filters\CSRF;
 use CodeIgniter\Filters\DebugToolbar;
 use CodeIgniter\Filters\ForceHTTPS;
@@ -31,10 +32,11 @@ class Filters extends BaseFilters
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-        'cors'          => Cors::class,
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        
+        'cors'          => CorsFilter::class,
         'authfilter'    => AuthFilter::class,
     ];
 
@@ -55,6 +57,7 @@ class Filters extends BaseFilters
         'before' => [
             'forcehttps', // Force Global Secure Requests
             'pagecache',  // Web Page Caching
+            'cors',
         ],
         'after' => [
             'pagecache',   // Web Page Caching
@@ -71,6 +74,7 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
+            // 'cors',
             // 'authfilter' => ['except' => ['auth/*']],
             // 'honeypot',
             // 'csrf',

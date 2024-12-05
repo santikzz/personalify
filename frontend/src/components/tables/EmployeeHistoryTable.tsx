@@ -1,32 +1,56 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
     ColumnDef,
     useReactTable,
     getCoreRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
     flexRender,
 } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"; // Adjust imports for ShadCN components
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox"
-
+import { Checkbox } from "@/components/ui/checkbox";
 import { EmployeeLogRow } from "@/types/Employee.types";
 
 /*
-* This table is used in the home page to display 
-* a log of employees and their check-in and check-out times in the day
+* This table is used in the /employee/:id page to display 
+* the history of an employee and their check-in and check-out times
 */
-export const EmployeeLogTable = ({ data }: { data: EmployeeLogRow[] }) => {
+export const EmployeeHistoryTable = ({ data }: { data: EmployeeLogRow[] }) => {
 
-    const [search, setSearch] = useState<string>("");
-    const navigate = useNavigate();
+    const [selectedRows, setSelectedRows] = useState<EmployeeLogRow[]>([]);
 
     const columns: ColumnDef<EmployeeLogRow>[] = [
+        {
+            id: "select",
+            header: ({ table }) => (
+                <Checkbox
+                    checked={
+                        table.getIsAllPageRowsSelected() ||
+                        (table.getIsSomePageRowsSelected() && "indeterminate")
+                    }
+                    onCheckedChange={(value) => {
+                        const newSelected = value ? data.filter((row) => !row.is_paid) : [];
+                        setSelectedRows(newSelected);
+                        table.toggleAllPageRowsSelected(!!value)
+                    }}
+                    aria-label="Select all"
+                />
+            ),
+            cell: ({ row }) => (
+                <Checkbox
+                    checked={row.getIsSelected()}
+                    onCheckedChange={(value) => {
+                        if (!row.original.is_paid) {
+                            row.toggleSelected(!!value)
+                            const updatedSelectedRows = value ? [...selectedRows, row.original] : selectedRows.filter((r) => r.id !== row.original.id);
+                            setSelectedRows(updatedSelectedRows);
+                        }
+                    }}
+                    aria-label="Select row"
+                    disabled={row.original.is_paid}
+                />
+            ),
+            enableSorting: false,
+            enableHiding: false,
+        },
         {
             header: "Nombre",
             accessorKey: "name",
@@ -40,6 +64,11 @@ export const EmployeeLogTable = ({ data }: { data: EmployeeLogRow[] }) => {
         {
             header: "Salida",
             accessorKey: "check_out_time",
+            cell: (row) => row.getValue(),
+        },
+        {
+            header: "Horas totales",
+            accessorKey: "total_hours",
             cell: (row) => row.getValue(),
         },
         {
@@ -57,16 +86,15 @@ export const EmployeeLogTable = ({ data }: { data: EmployeeLogRow[] }) => {
     const table = useReactTable({
         data,
         columns,
-        // state: { sorting },
-        // onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
-        // getSortedRowModel: getSortedRowModel(),
-        // getPaginationRowModel: getPaginationRowModel(),
     });
+
+    useEffect(() => {
+        console.log(selectedRows);
+    }, [selectedRows])
 
     return (
         <div className="w-full">
-
             <div className="rounded-md border">
                 <Table>
                     <TableHeader>
@@ -92,7 +120,16 @@ export const EmployeeLogTable = ({ data }: { data: EmployeeLogRow[] }) => {
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    className={`cursor-pointer hover:bg-gray-200 dark:hover:bg-neutral-800`}
+                                    className={`
+                                        cursor-pointer hover:bg-gray-200 dark:hover:bg-neutral-800 
+                                        ${row.original.is_paid && 'bg-green-300'}
+                                        ${row.getIsSelected() && 'bg-blue-300'}
+                                    `}
+                                    onClick={() => {
+                                        if (row.original.is_paid) return;
+                                        row.toggleSelected();
+                                    }}
+                                // data-state={row.getIsSelected() && "selected"}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>

@@ -13,7 +13,9 @@ use App\Filters\AuthFilter;
  /**
  * Group routes for API endpoints
  */
-$routes->group('api',  function ($routes) {
+
+
+$routes->group('api', function ($routes) {
 
     $routes->get('health', function () {
         return 'OK';
@@ -28,17 +30,16 @@ $routes->group('api',  function ($routes) {
      * Group routes for administrators
      */
     $routes->group('admin', ['filter' => 'authfilter:administrator'], function ($routes) {
-        $routes->get('test', function () {
-            return "YOU ARE AN ADMIN!";
-        });
+
+        $routes->get('self', 'AdministratorController::self');
 
         $routes->get('employees', 'EmployeeController::index');
-        $routes->get('employees/(:id)', 'EmployeeController::show/$1');
+        $routes->get('employees/(:num)', 'EmployeeController::show/$1');
         $routes->post('employees', 'EmployeeController::store');
         $routes->put('employees', 'EmployeeController::update');
 
         $routes->get('clients', 'ClientController::index');
-        $routes->get('clients/(:id)', 'ClientController::show/$1');
+        $routes->get('clients/(:num)', 'ClientController::show/$1');
         $routes->post('clients', 'ClientController::store');
         $routes->put('clients', 'ClientController::update');
 

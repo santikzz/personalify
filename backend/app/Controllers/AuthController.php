@@ -14,7 +14,7 @@ class AuthController extends BaseController
     public function administratorLogin()
     {
         // TODO: a better way to validate the request
-        $data = $this->request->getPost(); // fetch post data
+        $data = $this->request->getJSON(); // fetch post data
         if (empty($data->email) || empty($data->password)) {
             return $this->response->setStatusCode(400)->setJSON(['message' => 'Missing fields']);
         }

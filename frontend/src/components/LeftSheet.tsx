@@ -1,9 +1,12 @@
-import { Building2, Home, Users } from "lucide-react"
+import { useGlobalContext } from "@/context/GlobalContext";
+import { Building2, Home, LogOut, Users } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 
 export default function LeftSheet() {
 
+    const { clearSession } = useGlobalContext();
     const navigate = useNavigate();
+
 
     const navItems = [
         { icon: Home, label: "Inicio", to: "/" },
@@ -23,6 +26,9 @@ export default function LeftSheet() {
                         <item.icon size={24} />{item.label}
                     </button>
                 ))}
+                <button 
+                className="flex flex-row items-center px-4 pt-8"
+                onClick={clearSession}><LogOut />Logout</button>
             </nav>
         </div>
     );
