@@ -1,12 +1,14 @@
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "lucide-react";
-import MainWrapper from "@/components/MainWrapper";
-import { EmployeeLogTable } from "@/components/tables/EmployeeLogTable";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { EmployeeLog } from "@/types/Employee.types";
+import MainWrapper from "@/components/MainWrapper";
 import { useGlobalContext } from "@/context/GlobalContext";
-import { useEffect } from "react";
+import { EmployeeLogTable } from "@/components/tables/EmployeeLogTable";
+import { EmployeeLog } from "@/types/Employee.types";
+import { Label } from "@/components/ui/label";
 
 const data: EmployeeLog[] = [
     {
@@ -31,24 +33,22 @@ export const HomePage = () => {
     return (
         <MainWrapper>
 
-            <div className="p-4">
+            <div className="flex flex-col gap-4">
 
                 <div className="flex flex-col justify-between gap-4">
-
-                    <div className="flex flex-row items-center gap-2 ">
-                        <Calendar size={32} className="text-primary-500" />
-                        <h2 className="text-2xl font-semibold">Martes 24, Noviembre</h2>
+                    <div className="flex flex-row items-center gap-2 py-4">
+                        <Calendar size={32} className="" />
+                        <Label className="text-2xl font-bold">Martes 24, Noviembre</Label>
                     </div>
 
                     <div className="flex flex-row items-center gap-2">
                         <Input placeholder="Buscar empleado..." className="w-64" />
-                        <Button>Buscar</Button>
                     </div>
 
                 </div>
 
+                <EmployeeLogTable data={data} />
             </div>
-            <EmployeeLogTable data={data} />
         </MainWrapper>
     )
 }

@@ -1,6 +1,6 @@
 
 export interface Employee {
-    id: number;
+    id: string;
     name: string;
     qr_code: string;
     created_at: string;

@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { ReceiptText } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import { createInvoice } from "@/services/api";
 
-export const EmployeeNewInvoiceDialog = ({ employee, days }: any) => {
+export const EmployeeNewInvoiceDialog = ({ employee, days, disabled = false }: any) => {
 
     const price_per_hour = 1000;
     const totalWorkedMinutes = days.reduce((acc: number, day: any) => acc + Number(day.worked_minutes), 0);
@@ -21,7 +21,7 @@ export const EmployeeNewInvoiceDialog = ({ employee, days }: any) => {
 
         <Dialog>
             <DialogTrigger asChild>
-                <Button className=""><ReceiptText />Nueva facturacion</Button>
+                <Button className="" disabled={disabled}><Plus />Nueva facturacion</Button>
             </DialogTrigger>
             <DialogContent className="">
                 <DialogHeader>

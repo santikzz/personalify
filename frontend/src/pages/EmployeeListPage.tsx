@@ -1,26 +1,27 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-    ColumnDef,
-    useReactTable,
-    getCoreRowModel,
-    flexRender,
-} from "@tanstack/react-table";
+import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, } from "@tanstack/react-table"
 import { Plus } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import MainWrapper from "@/components/MainWrapper";
 import { useEmployees } from "@/hooks/queries/employees";
+import { Employee } from "@/types/Employee.types";
+import { InputSearch } from "@/components/InputSearch";
 
 export const EmployeeListPage = () => {
 
     const navigate = useNavigate();
-    const [search, setSearch] = useState<string>("");
-    const { data: employees, isLoading: employeesLoading } = useEmployees(search);
 
-    const columns: ColumnDef<any>[] = [
+    const [sorting, setSorting] = useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+    const [rowSelection, setRowSelection] = useState({})
+
+    const { data: employees, isLoading: employeesLoading } = useEmployees();
+
+    const columns: ColumnDef<Employee>[] = [
         {
             header: "Nombre",
             accessorKey: "name",
@@ -31,22 +32,29 @@ export const EmployeeListPage = () => {
     const table = useReactTable({
         data: employees || [],
         columns,
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
-    });
+        getFilteredRowModel: getFilteredRowModel(),
+        state: {
+            columnFilters,
+        },
+    })
 
     return (
         <MainWrapper>
 
             <div className="w-full">
-
-                <div className="flex items-center justify-between py-4">
-                    <Input
-                        placeholder="Buscar empleado..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="max-w-sm"
-                    />
+                <div className="flex items-center gap-4 py-4">
                     <Button onClick={() => navigate('/newemployee')}><Plus />Nuevo empleado</Button>
+                    <InputSearch
+                        placeholder="Buscar empleado..."
+                        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                        onChange={(event) =>
+                            table.getColumn("name")?.setFilterValue(event.target.value)
+                        }
+                        className="w-80"
+                    />
                 </div>
 
                 <div className="rounded-md border">
@@ -104,5 +112,5 @@ export const EmployeeListPage = () => {
             </div>
 
         </MainWrapper>
-    )
+    );
 }

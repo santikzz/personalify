@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-
-import Header from "./Header";
-import LeftSheet from "./LeftSheet";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import Header from "@/components/Header";
+import { AppSidebar } from "@/components/AppSidebar";
 
 interface MainWrapperProps {
     children: ReactNode;
@@ -11,16 +11,16 @@ interface MainWrapperProps {
 
 export default function MainWrapper({ children, className }: MainWrapperProps) {
     return (
-        <div className="flex h-screen flex-col">
-            <Header />
-            <div className="flex flex-1 overflow-hidden">
-                <aside className="hidden w-64 flex-shrink-0 border-r md:block">
-                    <LeftSheet />
-                </aside>
-                <main className={cn("flex-1 overflow-y-auto p-4", className)}>
-                    {children}
+        <div className="min-h-screen flex flex-col">
+            <SidebarProvider>
+                <AppSidebar />
+                <main className={cn("flex-1", className)}>
+                    <Header />
+                    <div className="p-4">
+                        {children}
+                    </div>
                 </main>
-            </div>
+            </SidebarProvider>
         </div>
-    )
+    );
 }

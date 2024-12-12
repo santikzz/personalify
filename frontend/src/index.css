@@ -90,3 +90,7 @@
   }
 
 }
+
+.login-background{
+  background-image: url('/static/background.jpg');
+}

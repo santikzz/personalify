@@ -13,7 +13,7 @@ import { Lock, LogIn, Mail } from 'lucide-react'
 import { PasswordInput } from '@/components/ui/password-input'
 
 import { authenticate } from '@/services/api'
-import { squad_icon_256 } from "@/Assets"
+import { logo_full_black, logo_full_white, squad_icon_256 } from "@/Assets"
 import { useGlobalContext } from '@/context/GlobalContext'
 import { AdministratorCredentials } from '@/types/Api.types'
 
@@ -48,17 +48,18 @@ export const LoginPage = () => {
 
     return (
 
-        <div className='min-h-screen w-full flex justify-center bg-neutral-100'>
+        <div className='min-h-screen w-full flex justify-center bg-neutral-100 login-background'>
 
             <div className="flex flex-col items-center justify-center w-[90%] md:w-[400px]">
 
                 <div className="flex flex-row items-center space-x-2 mb-4 w-full">
-                    <img src={squad_icon_256} className="h-16" alt="SQUAD" />
-                    <h2 className='font-bold text-5xl'>PERSONALIFY</h2>
+                    {/* <img src={logo_full_black} className="" alt="SQUAD" /> */}
+                    {/* <h2 className='font-bold text-5xl'>PERSONALIFY</h2> */}
                 </div>
 
                 <Card className="w-full">
                     <CardHeader>
+                        <img src={logo_full_black} className="" alt="SQUAD" />
                         <CardTitle className="text-2xl">Iniciar sesion</CardTitle>
                     </CardHeader>
                     <CardContent>
