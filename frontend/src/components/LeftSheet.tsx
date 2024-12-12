@@ -7,7 +7,6 @@ export default function LeftSheet() {
     const { clearSession } = useGlobalContext();
     const navigate = useNavigate();
 
-
     const navItems = [
         { icon: Home, label: "Inicio", to: "/" },
         { icon: Users, label: "Personal", to: "/personal" },

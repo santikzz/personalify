@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     ColumnDef,
     useReactTable,
     getCoreRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
     flexRender,
 } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
@@ -13,46 +11,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-// import EmployeeTable from "@/components/EmployeeTable";
 import MainWrapper from "@/components/MainWrapper";
-
-import { fetchEmployees } from "@/services/api";
-import { useNavigate } from "react-router-dom";
-
-interface Employee {
-    id: number;
-    name: string;
-    qr_code: string;
-}
+import { useEmployees } from "@/hooks/queries/employees";
 
 export const EmployeeListPage = () => {
 
-    const [employees, setEmployees] = useState<Employee[] | null>(null);
-    useEffect(() => {
-
-        const fetch = async () => {
-            const data = await fetchEmployees();
-            setEmployees(data);
-        }
-        fetch();
-
-    }, []);
-
-    const [search, setSearch] = useState<string>("");
-
     const navigate = useNavigate();
+    const [search, setSearch] = useState<string>("");
+    const { data: employees, isLoading: employeesLoading } = useEmployees(search);
 
-    const columns: ColumnDef<Employee>[] = [
+    const columns: ColumnDef<any>[] = [
         {
             header: "Nombre",
             accessorKey: "name",
             cell: (info) => info.getValue(),
-        },
-        {
-            header: "DNI",
-            accessorKey: "dni",
-            cell: (info) => info.getValue(),
-        },
+        }
     ];
 
     const table = useReactTable({

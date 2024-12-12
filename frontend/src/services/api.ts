@@ -44,15 +44,8 @@ export const fetchSelf = async () => {
 /*
  * ================ EMPLOYEES ENDPOINTS ================
 */
-export const fetchEmployees = async (search?: string) => {
-    const endpoint: string = '/api/admin/employees';
-    const params = { search: '' };
-    if (search) params.search = search;
-
-    const query = new URLSearchParams(params).toString();
-    const url = query ? `${endpoint}?${query}` : endpoint;
-
-    const response = await axiosApi.get(url);
+export const fetchEmployees = async () => {
+    const response = await axiosApi.get('/api/admin/employees');
     if (response.status === 200) {
         return response.data;
     }
@@ -77,6 +70,24 @@ export const createEmployee = async (employeeData: any) => {
 
 export const updateEmployee = async (employeeId: string, employeeData: any) => {
     const response = await axiosApi.put(`/api/admin/employees/${employeeId}`, employeeData);
+    if (response.status === 200) {
+        return response.data;
+    }
+    return null;
+}
+
+export const deleteEmployee = async (employeeId: string) => {
+    const response = await axiosApi.delete(`/api/admin/employees/${employeeId}`);
+    if (response.status === 200) {
+        return true;
+    }
+}
+
+/*
+ * ================ MANAGERS ENDPOINTS ================
+*/
+export const fetchManagers = async () => {
+    const response = await axiosApi.get('/api/admin/managers');
     if (response.status === 200) {
         return response.data;
     }
@@ -120,6 +131,51 @@ export const createClient = async (clientData: any) => {
 export const updateClient = async (clientId: string, clientData: any) => {
     const response = await axiosApi.put(`/api/admin/clients/${clientId}`, clientData);
     if (response.status === 200) {
+        return response.data;
+    }
+    return null;
+}
+
+export const deleteClient = async (clientId: string) => {
+    const response = await axiosApi.delete(`/api/admin/clients/${clientId}`);
+    if (response.status === 200) {
+        return true;
+    }
+}
+
+/*
+ * ================ ATTENDANCE ENDPOINTS ================
+*/
+export const fetchAttendances = async (employeeId: string) => {
+    const response = await axiosApi.get(`/api/admin/employees/${employeeId}/attendance`);
+    if (response.status === 200) {
+        return response.data;
+    }
+    return null;
+}
+
+export const createAttendance = async (employeeId: string, attendanceData: any) => {
+    const response = await axiosApi.post(`/api/admin/employees/${employeeId}/attendance`, attendanceData);
+    if (response.status === 201) {
+        return response.data;
+    }
+    return null;
+}
+
+/*
+ * ================ INVOICES ENDPOINTS ================
+*/
+export const fetchInvoices = async (employeeId: string) => {
+    const response = await axiosApi.get(`/api/admin/employees/${employeeId}/invoices`);
+    if (response.status === 200) {
+        return response.data;
+    }
+    return null;
+}
+
+export const createInvoice = async (employeeId: string, invoiceData: any) => {
+    const response = await axiosApi.post(`/api/admin/employees/${employeeId}/invoices`, invoiceData);
+    if (response.status === 201) {
         return response.data;
     }
     return null;

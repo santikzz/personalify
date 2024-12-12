@@ -1,118 +1,33 @@
-import MainWrapper from "@/components/MainWrapper";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useParams } from "react-router-dom";
-
 import { useEffect, useState } from "react";
-import {
-    ColumnDef,
-    useReactTable,
-    getCoreRowModel,
-    flexRender,
-} from "@tanstack/react-table";
+import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { ColumnDef, useReactTable, getCoreRowModel, flexRender, } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"; // Adjust imports for ShadCN components
 import { Checkbox } from "@/components/ui/checkbox";
-import { Employee, EmployeeLogRow } from "@/types/Employee.types";
-import { fetchEmployee } from "@/services/api";
 
-
-const mockData: EmployeeLogRow[] = [
-    {
-        id: 1,
-        name: "asdasd Bugnon",
-        date: "22/09/2021",
-        check_in_time: "01:00",
-        check_out_time: "17:00",
-        total_hours: "16",
-        manager: "Jane Doe",
-        location: "9 de Julio 1234",
-        is_paid: true
-    },
-    {
-        id: 1,
-        name: "ghjghjgh Bugnon",
-        date: "01/09/2021",
-        check_in_time: "08:00",
-        check_out_time: "17:00",
-        total_hours: "16",
-        manager: "Jane Doe",
-        location: "9 de Julio 1234",
-        is_paid: true
-    },
-    {
-        id: 1,
-        name: "Santiago Bugnon",
-        date: "23/09/2021",
-        check_in_time: "08:00",
-        check_out_time: "17:00",
-        total_hours: "16",
-        manager: "Jane Doe",
-        location: "9 de Julio 1234",
-        is_paid: false
-    },
-    {
-        id: 1,
-        name: "dbvxere Bugnon",
-        date: "12/09/2021",
-        check_in_time: "08:00",
-        check_out_time: "17:00",
-        total_hours: "16",
-        manager: "Jane Doe",
-        location: "9 de Julio 1234",
-        is_paid: false
-    },
-    {
-        id: 1,
-        name: "zzzzz Bugnon",
-        date: "07/09/2021",
-        check_in_time: "08:00",
-        check_out_time: "17:00",
-        total_hours: "16",
-        manager: "Jane Doe",
-        location: "9 de Julio 1234",
-        is_paid: false
-    },
-    {
-        id: 1,
-        name: "aaaa Bugnon",
-        date: "21/09/2020",
-        check_in_time: "08:00",
-        check_out_time: "17:00",
-        total_hours: "16",
-        manager: "Jane Doe",
-        location: "9 de Julio 1234",
-        is_paid: true
-    },
-    {
-        id: 1,
-        name: "Santiago Bugnon",
-        date: "21/09/2021",
-        check_in_time: "24:00",
-        check_out_time: "17:00",
-        total_hours: "16",
-        manager: "Jane Doe",
-        location: "9 de Julio 1234",
-        is_paid: true
-    },
-]
+import MainWrapper from "@/components/MainWrapper";
+import { useAttendances } from "@/hooks/queries/attendaces";
+import { useDeleteEmployee, useEmployee } from "@/hooks/queries/employees";
+import { EmployeeNewAttendanceDialog } from "@/components/EmployeeNewAttendanceDialog";
+import { EmployeeNewInvoiceDialog } from "@/components/EmployeeNewInvoiceDialog";
+import { EmployeeAttendance } from "@/types/Employee.types";
+import { format } from "date-fns";
 
 export const EmployeePage = () => {
 
     const { employeeId } = useParams();
-    const [employee, setEmployee] = useState<Employee | null>(null);
-    const [selectedRows, setSelectedRows] = useState<EmployeeLogRow[]>([]);
+    const [selectedRows, setSelectedRows] = useState<EmployeeAttendance[]>([]);
 
-    useEffect(() => { 
-        const fetch = async () => {
-            const data = await fetchEmployee(employeeId);
-            setEmployee(data);
+    const { data: employee, isLoading: employeeLoading } = useEmployee(employeeId);
+    // const { mutate: deleteEmployee, isLoading: deleteLoading, isSuccess, isError } = useDeleteEmployee();
+    const { data: attendances, isLoading: attendancesLoading } = useAttendances(employeeId);
 
-        }
-        fetch();
-    }, []);
+    useEffect(() => {
+        console.log(selectedRows);
+    }, [selectedRows]);
 
-    const columns: ColumnDef<EmployeeLogRow>[] = [
+    const columns: ColumnDef<EmployeeAttendance>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -122,7 +37,7 @@ export const EmployeePage = () => {
                         (table.getIsSomePageRowsSelected() && "indeterminate")
                     }
                     onCheckedChange={(value) => {
-                        const newSelected = value ? data.filter((row) => !row.is_paid) : [];
+                        const newSelected = value ? data.filter((row) => !row.billed) : [];
                         setSelectedRows(newSelected);
                         table.toggleAllPageRowsSelected(!!value)
                     }}
@@ -133,14 +48,14 @@ export const EmployeePage = () => {
                 <Checkbox
                     checked={row.getIsSelected()}
                     onCheckedChange={(value) => {
-                        if (!row.original.is_paid) {
+                        if (row.original.billed != '1') {
                             row.toggleSelected(!!value)
                             const updatedSelectedRows = value ? [...selectedRows, row.original] : selectedRows.filter((r) => r.id !== row.original.id);
                             setSelectedRows(updatedSelectedRows);
                         }
                     }}
                     aria-label="Select row"
-                    disabled={row.original.is_paid}
+                    disabled={row.original.billed === '1'}
                 />
             ),
             enableSorting: false,
@@ -148,66 +63,64 @@ export const EmployeePage = () => {
         },
         {
             header: "Nombre",
-            accessorKey: "name",
+            accessorKey: "employee_name",
             cell: (row) => row.getValue(),
+        },
+        {
+            header: "Fecha",
+            accessorKey: "date",
+            cell: (row) => format(row.getValue(), 'dd-MM-yyyy'),
         },
         {
             header: "Entrada",
             accessorKey: "check_in_time",
-            cell: (row) => row.getValue(),
+            cell: (row) => format(row.getValue(), 'HH:mm'),
         },
         {
             header: "Salida",
             accessorKey: "check_out_time",
-            cell: (row) => row.getValue(),
+            cell: (row) => format(row.getValue(), 'HH:mm'),
         },
         {
             header: "Horas totales",
-            accessorKey: "total_hours",
-            cell: (row) => row.getValue(),
+            accessorKey: "worked_minutes",
+            cell: (row) => (row.getValue() / 60),
         },
         {
             header: "Gerente",
-            accessorKey: "manager",
+            accessorKey: "manager_name",
             cell: (row) => row.getValue(),
         },
         {
-            header: "Direccion",
-            accessorKey: "location",
+            header: "Cliente",
+            accessorKey: "client_name",
             cell: (row) => row.getValue(),
         },
     ];
 
     const table = useReactTable({
-        data: mockData,
+        data: attendances || [],
         columns,
         getCoreRowModel: getCoreRowModel(),
     });
 
-    useEffect(() => {
-        console.log(selectedRows);
-    }, [selectedRows])
-
+    // useEffect(() => {
+    //     console.log(selectedRows);
+    // }, [selectedRows]);
 
     return (
         <MainWrapper>
-
-            <div className="p-4   flex-1">
-
+            <div className="p-4 flex-1">
                 <div className="flex flex-col gap-2">
-
                     <Label className="text-xl font-bold">{employee?.name}</Label>
-                    {/* <Label className="text-sm"><span className="font-bold">DNI:</span> 43149446</Label>
-                    <Label className="text-sm"><span className="font-bold">Telefono:</span> 2494202627</Label>
-                    <Label className="text-sm"><span className="font-bold">Direccion:</span> 9 de Julio 1234</Label> */}
-
                 </div>
-
             </div>
 
-
             <div className="pt-4 flex flex-col gap-4">
-                <Label className="text-2xl font-bold">Historial</Label>
+                <div className="flex gap-2">
+                    <EmployeeNewInvoiceDialog employee={employee} days={selectedRows} />
+                    <EmployeeNewAttendanceDialog employeeId={employee?.id} />
+                </div>
 
                 <div className="w-full">
                     <div className="rounded-md border">
@@ -235,14 +148,13 @@ export const EmployeePage = () => {
                                     table.getRowModel().rows.map((row) => (
                                         <TableRow
                                             key={row.id}
-                                            className={`
-                                        cursor-pointer hover:bg-gray-200 dark:hover:bg-neutral-800 
-                                        ${row.original.is_paid && 'bg-green-300'}
-                                        ${row.getIsSelected() && 'bg-blue-300'}
-                                    `}
+                                            className={` hover:bg-neutral-200
+                                                ${row.original.billed == '1' && 'bg-green-300'}
+                                                ${row.getIsSelected() && 'bg-blue-300'}
+                                            `}
                                             onClick={() => {
-                                                if (row.original.is_paid) return;
-                                                row.toggleSelected();
+                                                // if (row.original.billed == '1') return;
+                                                // row.toggleSelected();
                                             }}
                                         // data-state={row.getIsSelected() && "selected"}
                                         >
@@ -271,9 +183,7 @@ export const EmployeePage = () => {
                     </div>
                 </div>
 
-
             </div>
-
         </MainWrapper>
-    )
+    );
 }

@@ -41,4 +41,10 @@ class ClientController extends BaseController
         $client = $this->model->update($data->id, $data);
         return $this->response->setJSON($client)->setStatusCode(200);
     }
+
+    public function delete($id = null)
+    {
+        $client = $this->model->delete($id);
+        return $this->response->setJSON($client)->setStatusCode(200);
+    }
 }

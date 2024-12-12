@@ -1,10 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchEmployees, fetchEmployee, createEmployee } from "@/services/api";
+import { fetchEmployees, fetchEmployee, createEmployee, deleteEmployee } from "@/services/api";
 
-export const useEmployees = (search?: string) => {
+export const useEmployees = () => {
     return useQuery({
-        queryKey: ['employees', search],
-        queryFn: () => fetchEmployees(search),
+        queryKey: ['employees'],
+        queryFn: () => fetchEmployees(),
         staleTime: 1000 * 10, // 10 seconds
     });
 };
@@ -22,6 +22,16 @@ export const useCreateEmployee = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (employeeData: any) => createEmployee(employeeData),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['employees'] });
+        },
+    });
+};
+
+export const useDeleteEmployee = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (employeeId: string) => deleteEmployee(employeeId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['employees'] });
         },

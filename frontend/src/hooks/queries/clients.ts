@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchClients, fetchClient, createClient } from "@/services/api";
+import { fetchClients, fetchClient, createClient, deleteClient } from "@/services/api";
 
 export const useClients = (search?: string) => {
     return useQuery({
@@ -27,3 +27,13 @@ export const useCreateClient = () => {
         },
     });
 };
+
+export const useDeleteClient = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (clientId: string) => deleteClient(clientId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['clients'] });
+        },
+    });
+}

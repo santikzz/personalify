@@ -12,6 +12,16 @@ CREATE TABLE `administrator` (
   PRIMARY KEY (`id`)
 );
 
+CREATE TABLE `manager` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `employee_id` int(11) NOT NULL,
+  `username` varchar(128) NOT NULL,
+  `password_hash` text NOT NULL,
+  `disabled` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+);
+
 CREATE TABLE `client` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(256) NOT NULL,
@@ -26,26 +36,27 @@ CREATE TABLE `employee` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `employee_atendance` (
+CREATE TABLE `employee_attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee_id` int(11) NOT NULL,
-  `date` date NOT NULL,
-  `max_hours` int(11) NOT NULL,
-  `check_in_time` time NOT NULL,
-  `check_out_time` time DEFAULT NULL,
+  `max_work_minutes` int(11) NOT NULL,
+  `date` DATE NOT NULL,
+  `check_in_time` DATETIME NOT NULL,
+  `check_out_time` DATETIME DEFAULT NULL,
+  `worked_minutes` int(11) DEFAULT NULL,
   `manager_id` int(11),
   `client_id` int(11),
-  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `billed` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `manager` (
+CREATE TABLE `employee_invoice` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee_id` int(11) NOT NULL,
-  `username` varchar(128) NOT NULL,
-  `password_hash` text NOT NULL,
-  `disabled` tinyint(1) NOT NULL DEFAULT 0,
-  `created_at` date NOT NULL DEFAULT current_timestamp(),
+  `total_worked_minutes` int(11) NOT NULL,
+  `price_per_hour` DECIMAL(10, 2) NOT NULL,
+  `total` DECIMAL(10, 2) NOT NULL,
+  `invoice_date` DATE NOT NULL,
   PRIMARY KEY (`id`)
 );
 
@@ -61,12 +72,15 @@ CREATE TABLE `sessions` (
   UNIQUE KEY `token` (`token`)
 );
 
-ALTER TABLE `employee_atendance`
-  ADD CONSTRAINT `fk_employee_atendance_employee` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_employee_atendance_manager` FOREIGN KEY (`manager_id`) REFERENCES `manager` (`id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `fk_employee_atendance_client` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`) ON DELETE SET NULL;
+ALTER TABLE `employee_attendance`
+  ADD CONSTRAINT `fk_employee_attendance_employee` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_employee_attendance_manager` FOREIGN KEY (`manager_id`) REFERENCES `manager` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_employee_attendance_client` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`) ON DELETE SET NULL;
 
 ALTER TABLE `manager`
   ADD CONSTRAINT `fk_manager_employee` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `employee_invoice`
+  ADD CONSTRAINT `fk_employee_invoice_employee` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`) ON DELETE CASCADE;
 
 COMMIT;

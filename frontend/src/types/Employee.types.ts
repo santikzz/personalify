@@ -6,10 +6,20 @@ export interface Employee {
     created_at: string;
 }
 
-export interface EmployeeRow {
-    id: number;
-    name: string;
-    dni: string;
+export interface EmployeeAttendance {
+    id: string;
+    employee_id: string;
+    employee_name: string;
+    check_in_time: string;
+    check_out_time: string;
+    date: string;
+    max_work_minutes: string;
+    worked_minutes: string;
+    billed: string;
+    manager_id: string;
+    manager_name: string;
+    client_id: string;
+    client_name: string;
 }
 
 /*
