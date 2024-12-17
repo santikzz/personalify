@@ -1,4 +1,6 @@
 import { AdministratorCredentials } from '@/types/Api.types';
+import { Client } from '@/types/Client.types';
+import { Employee } from '@/types/Employee.types';
 import axios from 'axios';
 
 const API_URL: string = 'http://localhost:8080';
@@ -60,7 +62,7 @@ export const fetchEmployee = async (employeeId: string) => {
     return null;
 }
 
-export const createEmployee = async (employeeData: any) => {
+export const createEmployee = async (employeeData: Employee) => {
     const response = await axiosApi.post('/api/admin/employees', employeeData);
     if (response.status === 201) {
         return response.data;
@@ -68,7 +70,7 @@ export const createEmployee = async (employeeData: any) => {
     return null;
 }
 
-export const updateEmployee = async (employeeId: string, employeeData: any) => {
+export const updateEmployee = async (employeeId: string, employeeData: Employee) => {
     const response = await axiosApi.put(`/api/admin/employees/${employeeId}`, employeeData);
     if (response.status === 200) {
         return response.data;
@@ -120,7 +122,7 @@ export const fetchClient = async (clientId: string) => {
     return null;
 }
 
-export const createClient = async (clientData: any) => {
+export const createClient = async (clientData: Client) => {
     const response = await axiosApi.post('/api/admin/clients', clientData);
     if (response.status === 201) {
         return response.data;
@@ -128,7 +130,7 @@ export const createClient = async (clientData: any) => {
     return null;
 }
 
-export const updateClient = async (clientId: string, clientData: any) => {
+export const updateClient = async (clientId: string, clientData: Client) => {
     const response = await axiosApi.put(`/api/admin/clients/${clientId}`, clientData);
     if (response.status === 200) {
         return response.data;

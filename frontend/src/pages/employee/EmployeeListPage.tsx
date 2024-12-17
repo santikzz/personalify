@@ -46,7 +46,7 @@ export const EmployeeListPage = () => {
 
             <div className="w-full">
                 <div className="flex items-center gap-4 py-4">
-                    <Button onClick={() => navigate('/newemployee')}><Plus />Nuevo empleado</Button>
+                    <Button onClick={() => navigate('/employee/new')}><Plus />Nuevo empleado</Button>
                     <InputSearch
                         placeholder="Buscar empleado..."
                         value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}

@@ -9,49 +9,42 @@ import {
 import { Button } from "@/components/ui/button"
 import { FileText } from 'lucide-react'
 import { Employee } from "@/types/Employee.types"
-
-interface Invoice {
-    id: string
-    date: string
-    amount: number
-    status: "Paid" | "Pending" | "Overdue"
-}
+import { useInvoices } from "@/hooks/queries/invoices"
+import { Loader } from "../loader"
 
 export function InvoiceTable({ employee }: { employee: Employee }) {
-    const invoices: Invoice[] = [
-        { id: "INV-001", date: "2023-05-01", amount: 1000, status: "Paid" },
-        { id: "INV-002", date: "2023-05-15", amount: 1200, status: "Pending" },
-        { id: "INV-003", date: "2023-04-30", amount: 800, status: "Overdue" },
-        { id: "INV-004", date: "2023-06-01", amount: 1500, status: "Pending" },
-        { id: "INV-005", date: "2023-06-15", amount: 950, status: "Paid" },
-    ]
+
+    const { data: invoices, isLoading } = useInvoices(employee?.id);
 
     return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Invoice ID</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Actions</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {invoices.map((invoice) => (
-                    <TableRow key={invoice.id}>
-                        <TableCell className="font-medium">{invoice.id}</TableCell>
-                        <TableCell>{invoice.date}</TableCell>
-                        <TableCell>${invoice.amount.toFixed(2)}</TableCell>
-                        <TableCell>
-                            <Button variant="ghost" size="sm">
-                                <FileText className="h-4 w-4 mr-2" />
-                                View
-                            </Button>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    )
+        <>
+            {isLoading ?
+                <div className="p-4 flex justify-center items-center">
+                    < Loader />
+                </div>
+                : (
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Fecha</TableHead>
+                                <TableHead>Horas</TableHead>
+                                <TableHead>$/h</TableHead>
+                                <TableHead>Subtotal</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {invoices?.map((invoice) => (
+                                <TableRow key={invoice.id}>
+                                    <TableCell>{invoice.invoice_date}</TableCell>
+                                    <TableCell>{Number(invoice.total_worked_minutes) / 60}</TableCell>
+                                    <TableCell>${invoice.price_per_hour}/h</TableCell>
+                                    <TableCell>${invoice.total}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                )}
+        </>
+    );
 }
 

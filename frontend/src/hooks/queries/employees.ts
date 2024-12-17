@@ -1,5 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchEmployees, fetchEmployee, createEmployee, deleteEmployee } from "@/services/api";
+import { fetchEmployees, fetchEmployee, createEmployee, deleteEmployee, updateEmployee } from "@/services/api";
+import { Employee } from "@/types/Employee.types";
+import { EmptyObject } from "react-hook-form";
 
 export const useEmployees = () => {
     return useQuery({
@@ -21,7 +23,7 @@ export const useEmployee = (employeeId: string) => {
 export const useCreateEmployee = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (employeeData: any) => createEmployee(employeeData),
+        mutationFn: (employeeData: Employee) => createEmployee(employeeData),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['employees'] });
         },
@@ -37,3 +39,13 @@ export const useDeleteEmployee = () => {
         },
     });
 };
+
+export const useUpdateEmployee = (employeeId: string) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (employeeData: Employee) => updateEmployee(employeeId, employeeData),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['employees'] });
+        },
+    });
+}

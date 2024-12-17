@@ -25,7 +25,7 @@ const formSchema = z.object({
     client_id: z.string()
 });
 
-export const EmployeeNewAttendanceDialog = ({ employeeId }: { employeeId: string }) => {
+export const EmployeeNewAttendanceDialog = ({ employeeId, disabled }: { employeeId: string, disabled: boolean }) => {
 
     const { data: clients, isLoading: clientsLoading } = useClients();
     const { data: managers, isLoading: managersLoading } = useManagers();
@@ -57,7 +57,7 @@ export const EmployeeNewAttendanceDialog = ({ employeeId }: { employeeId: string
 
         <Dialog>
             <DialogTrigger asChild>
-                <Button className=""><Clock />Nueva asistencia</Button>
+                <Button disabled={disabled}><Clock />Nueva asistencia</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

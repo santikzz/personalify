@@ -1,10 +1,10 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import { Edit, IdCard, Mail, Phone } from 'lucide-react'
-import { Employee } from "@/types/Employee.types"
+import { Edit, Mail, Map, Phone } from 'lucide-react'
 import { Loader } from "@/components/loader";
 import { Link } from "react-router-dom";
+import { Client } from "@/types/Client.types";
 
-export function EmployeeHeader({ employee, isLoading }: { employee: Employee, isLoading: boolean }) {
+export function ClientHeader({ client, isLoading }: { client: Client, isLoading: boolean }) {
     return (
         <Card>
             {isLoading ?
@@ -17,11 +17,11 @@ export function EmployeeHeader({ employee, isLoading }: { employee: Employee, is
 
                             <div className="flex flex-col gap-2">
                                 <div className="flex flex-row gap-2">
-                                    <CardTitle className="text-2xl">{employee?.name}</CardTitle>
-                                    <Link to={`/employee/${employee?.id}/edit`} className="flex items-center gap-1"><Edit size={16} /><span>Editar</span></Link>
+                                    <CardTitle className="text-2xl">{client?.name}</CardTitle>
+                                    <Link to={`/client/${client?.id}/edit`} className="flex items-center gap-1"><Edit size={16} /><span>Editar</span></Link>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <IdCard className="h-4 w-4 opacity-70" /> <span>{"#dni"}</span>
+                                    <Map className="h-4 w-4 opacity-70" /> <span>{"#ubicacion"}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Phone className="h-4 w-4 opacity-70" /> <span>{"#phone"}</span>
@@ -30,7 +30,6 @@ export function EmployeeHeader({ employee, isLoading }: { employee: Employee, is
                                     <Mail className="h-4 w-4 opacity-70" /> <span>{"#email"}</span>
                                 </div>
                             </div>
-                            <img className="aspect-square w-32" src="/static/qr_example.png" />
                         </div>
                     </CardContent>
                 </>

@@ -8,6 +8,7 @@ import { EmployeeNewAttendanceDialog } from "@/components/EmployeeNewAttendanceD
 import { EmployeeNewInvoiceDialog } from "@/components/EmployeeNewInvoiceDialog";
 import { Employee, EmployeeAttendance } from "@/types/Employee.types";
 import { useAttendances } from "@/hooks/queries/attendaces";
+import { Loader } from "../loader";
 
 export function AttendanceTable({ employee }: { employee: Employee }) {
 
@@ -94,66 +95,72 @@ export function AttendanceTable({ employee }: { employee: Employee }) {
     return (
         <>
             <div className="flex gap-2 px-2 pb-2">
-                <EmployeeNewInvoiceDialog employee={employee} days={selectedRows} disabled={selectedRows.length == 0} />
-                <EmployeeNewAttendanceDialog employee={employee?.id} />
+                <EmployeeNewInvoiceDialog employee={employee} days={selectedRows} disabled={selectedRows.length == 0 || attendancesLoading} />
+                <EmployeeNewAttendanceDialog employee={employee?.id} disabled={attendancesLoading} />
             </div>
 
-            <Table>
-                <TableHeader>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <TableHead key={header.id}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                )
-                            })}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                className={` hover:bg-neutral-200
+            {attendancesLoading ?
+                <div className="p-4 flex items-center justify-center">
+                    <Loader />
+                </div>
+                : (
+                    <Table>
+                        <TableHeader>
+                            {table.getHeaderGroups().map((headerGroup) => (
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        return (
+                                            <TableHead key={header.id}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                            </TableHead>
+                                        )
+                                    })}
+                                </TableRow>
+                            ))}
+                        </TableHeader>
+                        <TableBody>
+                            {table.getRowModel().rows?.length ? (
+                                table.getRowModel().rows.map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        className={` hover:bg-neutral-200
                                                 ${row.original.billed == '1' && 'bg-green-300'}
                                                 ${row.getIsSelected() && 'bg-blue-300'}
                                             `}
-                                onClick={() => {
-                                    // if (row.original.billed == '1') return;
-                                    // row.toggleSelected();
-                                }}
-                            // data-state={row.getIsSelected() && "selected"}
-                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id}>
-                                        {flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext()
-                                        )}
+                                        onClick={() => {
+                                            // if (row.original.billed == '1') return;
+                                            // row.toggleSelected();
+                                        }}
+                                    // data-state={row.getIsSelected() && "selected"}
+                                    >
+                                        {row.getVisibleCells().map((cell) => (
+                                            <TableCell key={cell.id}>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
+                                        {attendancesLoading ? 'Cargando...' : 'Sin resultados.'}
                                     </TableCell>
-                                ))}
-                            </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell
-                                colSpan={columns.length}
-                                className="h-24 text-center"
-                            >
-                                {attendancesLoading ? 'Cargando...' : 'Sin resultados.'}
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                )}
         </>
     );
 }

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import MainWrapper from "@/components/MainWrapper";
 import { useGlobalContext } from "@/context/GlobalContext";
-import { EmployeeLogTable } from "@/components/tables/EmployeeLogTable";
+// import { EmployeeLogTable } from "@/components/tables/EmployeeLogTable";
 import { EmployeeLog } from "@/types/Employee.types";
 import { Label } from "@/components/ui/label";
 
@@ -47,7 +47,7 @@ export const HomePage = () => {
 
                 </div>
 
-                <EmployeeLogTable data={data} />
+                {/* <EmployeeLogTable data={data} /> */}
             </div>
         </MainWrapper>
     )

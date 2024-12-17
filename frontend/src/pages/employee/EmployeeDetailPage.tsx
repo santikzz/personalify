@@ -8,11 +8,10 @@ import { EmployeeHeader } from "@/components/employee/employee-header";
 import { AttendanceTable } from "@/components/employee/attendance-table";
 import { InvoiceTable } from "@/components/employee/invoice-table";
 
-export const EmployeePage = () => {
+export const EmployeeDetailPage = () => {
 
     const { employeeId } = useParams();
-    const { data: employee, isLoading: employeeLoading } = useEmployee(employeeId);
-    // const { mutate: deleteEmployee, isLoading: deleteLoading, isSuccess, isError } = useDeleteEmployee();
+    const { data: employee, isLoading: employeeLoading } = useEmployee(employeeId || "none");
 
     return (
         <MainWrapper>

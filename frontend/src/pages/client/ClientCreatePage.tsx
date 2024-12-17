@@ -1,28 +1,17 @@
 import { useEffect, useState } from "react"
-import { toast } from "sonner"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import MainWrapper from "@/components/MainWrapper"
 import { useCreateClient } from "@/hooks/queries/clients"
+import { ClientDataForm } from "@/components/client/client-data-form"
+import { Label } from "@/components/ui/label"
 
 const formSchema = z.object({
   name: z.string(),
 });
 
-export const CreateClientPage = () => {
+export const ClientCreatePage = () => {
 
   /*
   * useCreateClient() is a custom react-query hook that returns an object with a function to create	a client. 
@@ -48,35 +37,11 @@ export const CreateClientPage = () => {
   }, [isError, isSuccess]);
 
   return (
-
     <MainWrapper>
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto py-10">
-
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nombre</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="nombre"
-
-                    type="text"
-                    {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
-
+      <div className="mx-auto max-w-3xl">
+        <Label className="text-2xl font-semibold">Crear cliente</Label>
+        <ClientDataForm form={form} onSubmit={onSubmit} />
+      </div>
     </MainWrapper>
-  )
+  );
 }

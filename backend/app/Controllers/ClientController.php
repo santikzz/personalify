@@ -35,10 +35,10 @@ class ClientController extends BaseController
         return $this->response->setJSON($client)->setStatusCode(201);
     }
 
-    public function update()
+    public function update($id = null)
     {
         $data = $this->request->getJSON();
-        $client = $this->model->update($data->id, $data);
+        $client = $this->model->update($id, $data);
         return $this->response->setJSON($client)->setStatusCode(200);
     }
 

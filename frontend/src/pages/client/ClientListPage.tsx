@@ -46,7 +46,7 @@ export const ClientListPage = () => {
 
             <div className="w-full">
                 <div className="flex items-center gap-4 py-4">
-                    <Button onClick={() => navigate('/newclient')}><Plus />Nuevo cliente</Button>
+                    <Button onClick={() => navigate('/client/new')}><Plus />Nuevo cliente</Button>
                     <InputSearch
                         placeholder="Buscar cliente..."
                         value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}

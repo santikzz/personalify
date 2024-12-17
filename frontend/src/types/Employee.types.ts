@@ -35,9 +35,6 @@ export interface EmployeeLog {
     location: string;
 }
 
-/*
-* used in EmployeeHistoryTable in the EmployeePage /employee/:id
-*/
 export interface EmployeeLogRow {
     id: number;
     name: string;

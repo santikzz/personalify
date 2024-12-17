@@ -3,15 +3,20 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from "@/components/theme-provider";
 import { GlobalProvider } from '@/context/GlobalContext';
 
-import { HomePage } from '@/pages/HomePage';
-import { ClientListPage } from '@/pages/ClientListPage';
-import { EmployeePage } from '@/pages/EmployeePage';
-import { EmployeeListPage } from '@/pages/EmployeeListPage';
-import { CreateEmployeePage } from '@/pages/CreateEmployeePage';
-import { CreateClientPage } from '@/pages/CreateClientPage';
-import { ClientPage } from '@/pages/ClientPage';
-import { LoginPage } from '@/pages/LoginPage';
 import { ProtectedRoute } from '@/utils/ProtectedRoute';
+import { HomePage } from '@/pages/HomePage';
+import { LoginPage } from '@/pages/LoginPage';
+
+import { EmployeeDetailPage } from '@/pages/employee/EmployeeDetailPage';
+import { EmployeeListPage } from '@/pages/employee/EmployeeListPage';
+import { EmployeeCreatePage } from '@/pages/employee/EmployeeCreatePage';
+import { EmployeeEditPage } from '@/pages/employee/EmployeeEditPage';
+
+import { ClientDetailPage } from '@/pages/client/ClientDetailPage';
+import { ClientListPage } from '@/pages/client/ClientListPage';
+import { ClientCreatePage } from '@/pages/client/ClientCreatePage';
+import { ClientEditPage } from './pages/client/ClientEditPage';
+
 
 export default function App() {
 
@@ -37,12 +42,14 @@ export default function App() {
               <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
 
               <Route path="/personal" element={<ProtectedRoute><EmployeeListPage /></ProtectedRoute>} />
-              <Route path="/employee/:employeeId" element={<ProtectedRoute><EmployeePage /></ProtectedRoute>} />
-              <Route path="/newemployee" element={<ProtectedRoute><CreateEmployeePage /></ProtectedRoute>} />
+              <Route path="/employee/:employeeId" element={<ProtectedRoute><EmployeeDetailPage /></ProtectedRoute>} />
+              <Route path="/employee/new" element={<ProtectedRoute><EmployeeCreatePage /></ProtectedRoute>} />
+              <Route path="/employee/:employeeId/edit" element={<ProtectedRoute><EmployeeEditPage /></ProtectedRoute>} />
 
               <Route path="/clients" element={<ProtectedRoute><ClientListPage /></ProtectedRoute>} />
-              <Route path="/client/:clientId" element={<ProtectedRoute><ClientPage /></ProtectedRoute>} />
-              <Route path="/newclient" element={<ProtectedRoute><CreateClientPage /></ProtectedRoute>} />
+              <Route path="/client/:clientId" element={<ProtectedRoute><ClientDetailPage /></ProtectedRoute>} />
+              <Route path="/client/new" element={<ProtectedRoute><ClientCreatePage /></ProtectedRoute>} />
+              <Route path="/client/:clientId/edit" element={<ProtectedRoute><ClientEditPage /></ProtectedRoute>} />
 
             </Routes>
           </Router>
