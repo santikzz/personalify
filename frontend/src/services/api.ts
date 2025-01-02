@@ -1,6 +1,7 @@
 import { AdministratorCredentials } from '@/types/Api.types';
 import { Client } from '@/types/Client.types';
 import { Employee } from '@/types/Employee.types';
+import { Manager, ManagerFormData } from '@/types/Manager.types';
 import axios from 'axios';
 
 const API_URL: string = 'http://localhost:8080';
@@ -94,6 +95,37 @@ export const fetchManagers = async () => {
         return response.data;
     }
     return null;
+}
+
+export const fetchManager = async (managerId: string) => {
+    const response = await axiosApi.get(`/api/admin/managers/${managerId}`);
+    if (response.status === 200) {
+        return response.data;
+    }
+    return null;
+}
+
+export const createManager = async (managerData: ManagerFormData) => {
+    const response = await axiosApi.post('/api/admin/managers', managerData);
+    if (response.status === 201) {
+        return response.data;
+    }
+    return null;
+}
+
+export const updateManager = async (managerId: string, managerData: ManagerFormData) => {
+    const response = await axiosApi.put(`/api/admin/managers/${managerId}`, managerData);
+    if (response.status === 200) {
+        return response.data;
+    }
+    return null;
+}
+
+export const deleteManager = async (managerId: string) => {
+    const response = await axiosApi.delete(`/api/admin/managers/${managerId}`);
+    if (response.status === 200) {
+        return true;
+    }
 }
 
 /*

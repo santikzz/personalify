@@ -1,8 +1,8 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, } from "@/components/ui/sidebar"
-import { Building2, ChevronUp, Home, LogOut, User2, Users } from "lucide-react"
+import { Building2, ChevronUp, Home, LogOut, User2, UserCog, Users } from "lucide-react"
 import { useLocation, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "@/context/GlobalContext";
-import { logo_full_white, squad_icon_256 } from "@/Assets";
+import { logo_full_white } from "@/Assets";
 import { DropdownMenu } from "./ui/dropdown-menu";
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -16,6 +16,11 @@ const navItems = [
         icon: Users,
         label: "Personal",
         to: "/personal"
+    },
+    {
+        icon: UserCog,
+        label: "Encargados",
+        to: "/managers"
     },
     {
         icon: Building2,

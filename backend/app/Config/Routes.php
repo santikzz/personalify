@@ -51,7 +51,7 @@ $routes->group('api', function ($routes) {
         $routes->get('clients', 'ClientController::index');                                                         // Get all clients
         $routes->get('clients/(:num)', 'ClientController::show/$1');                                                // Get client by id
         $routes->post('clients', 'ClientController::store');                                                        // Create new client
-        $routes->put('clients/(:num)', 'ClientController::update/$1');                                                        // Update client
+        $routes->put('clients/(:num)', 'ClientController::update/$1');                                              // Update client
         $routes->delete('clients/(:num)', 'ClientController::delete/$1');                                           // Delete client by id
 
     });
@@ -60,8 +60,18 @@ $routes->group('api', function ($routes) {
      * Group routes for managers - /api/manager
      */
     $routes->group('manager', ['filter' => 'authfilter:manager'], function ($routes) {
-        $routes->get('test', function () {
-            return "YOU ARE A MANAGER!";
-        });
+
+        $routes->get('self', 'ManagerController::self');
+
+        $routes->get('log', 'ManagerController::log');
+        $routes->post('checkin', 'ManagerController::checkin');
+        $routes->post('checkout', 'ManagerController::checkout');
+
+        $routes->get('employees', 'EmployeeController::index');
+        $routes->get('employee/(:num)', 'EmployeeController::show/$1');
+        $routes->get('employee/dni/(:num)', 'EmployeeController::showByDni/$1');
+
+        $routes->get('clients', 'ClientController::index');
+
     });
 });

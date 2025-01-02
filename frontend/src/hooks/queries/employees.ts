@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { fetchEmployees, fetchEmployee, createEmployee, deleteEmployee, updateEmployee } from "@/services/api";
 import { Employee } from "@/types/Employee.types";
-import { EmptyObject } from "react-hook-form";
 
 export const useEmployees = () => {
     return useQuery({

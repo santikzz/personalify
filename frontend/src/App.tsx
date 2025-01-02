@@ -15,7 +15,11 @@ import { EmployeeEditPage } from '@/pages/employee/EmployeeEditPage';
 import { ClientDetailPage } from '@/pages/client/ClientDetailPage';
 import { ClientListPage } from '@/pages/client/ClientListPage';
 import { ClientCreatePage } from '@/pages/client/ClientCreatePage';
-import { ClientEditPage } from './pages/client/ClientEditPage';
+import { ClientEditPage } from '@/pages/client/ClientEditPage';
+
+import { ManagerListPage } from '@/pages/manager/ManagerListPage';
+import { ManagerCreatePage } from '@/pages/manager/ManagerCreatePage';
+import { ManagerEditPage } from '@/pages/manager/ManagerEditPage';
 
 
 export default function App() {
@@ -45,6 +49,10 @@ export default function App() {
               <Route path="/employee/:employeeId" element={<ProtectedRoute><EmployeeDetailPage /></ProtectedRoute>} />
               <Route path="/employee/new" element={<ProtectedRoute><EmployeeCreatePage /></ProtectedRoute>} />
               <Route path="/employee/:employeeId/edit" element={<ProtectedRoute><EmployeeEditPage /></ProtectedRoute>} />
+
+              <Route path="/managers" element={<ProtectedRoute><ManagerListPage /></ProtectedRoute>} />
+              <Route path="/manager/new" element={<ProtectedRoute><ManagerCreatePage /></ProtectedRoute>} />
+              <Route path="/manager/:managerId/edit" element={<ProtectedRoute><ManagerEditPage /></ProtectedRoute>} />
 
               <Route path="/clients" element={<ProtectedRoute><ClientListPage /></ProtectedRoute>} />
               <Route path="/client/:clientId" element={<ProtectedRoute><ClientDetailPage /></ProtectedRoute>} />

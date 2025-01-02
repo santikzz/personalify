@@ -31,6 +31,7 @@ CREATE TABLE `client` (
 CREATE TABLE `employee` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
+  `dni` varchar(11) NOT NULL,
   `qr_code` text DEFAULT NULL,
   `created_at` date NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
