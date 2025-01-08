@@ -4,7 +4,7 @@ import { Employee } from '@/types/Employee.types';
 import { Manager, ManagerFormData } from '@/types/Manager.types';
 import axios from 'axios';
 
-const API_URL: string = 'http://localhost:8080';
+const API_URL: string = 'http://192.168.0.13:8080';
 
 const axiosApi = axios.create({
     baseURL: API_URL,
@@ -84,6 +84,14 @@ export const deleteEmployee = async (employeeId: string) => {
     if (response.status === 200) {
         return true;
     }
+}
+
+export const fetchLogs = async () => {
+    const response = await axiosApi.get('/api/admin/log');
+    if (response.status === 200) {
+        return response.data;
+    }
+    return null;
 }
 
 /*
@@ -196,11 +204,27 @@ export const createAttendance = async (employeeId: string, attendanceData: any) 
     return null;
 }
 
+export const updateAttendance = async (attendanceId: string, attendanceData: any) => {
+    const response = await axiosApi.put(`/api/admin/attendance/${attendanceId}`, attendanceData);
+    if (response.status === 200) {
+        return response.data;
+    }
+    return null;
+}
+
 /*
  * ================ INVOICES ENDPOINTS ================
 */
 export const fetchInvoices = async (employeeId: string) => {
     const response = await axiosApi.get(`/api/admin/employees/${employeeId}/invoices`);
+    if (response.status === 200) {
+        return response.data;
+    }
+    return null;
+}
+
+export const fetchInvoiceDetails = async (invoiceId: string) => {
+    const response = await axiosApi.get(`/api/admin/invoices/${invoiceId}`);
     if (response.status === 200) {
         return response.data;
     }

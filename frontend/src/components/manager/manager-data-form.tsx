@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Check, ChevronDown } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "@/components/ui/command"
@@ -7,10 +7,15 @@ import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popove
 import { cn } from "@/lib/utils";
 import { useEmployees } from "@/hooks/queries/employees";
 
-export const ManagerDataForm = ({ form, onSubmit }: any) => {
+interface ManagerDataFormProps {
+    form: any;
+    onSubmit: (data: any) => void;
+    formType: 'create' | 'edit';
+}
+
+export const ManagerDataForm = ({ form, onSubmit, formType }: ManagerDataFormProps) => {
 
     const { data: employees, isLoading } = useEmployees();
-
     if (isLoading) return <div>Cargando...</div>
 
     return (
@@ -22,7 +27,7 @@ export const ManagerDataForm = ({ form, onSubmit }: any) => {
                     name="employee_id"
                     render={({ field }) => (
                         <FormItem className="flex flex-col">
-                            <FormLabel>Empleado</FormLabel>
+                            <FormLabel>Empleado *</FormLabel>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <FormControl>
@@ -80,7 +85,8 @@ export const ManagerDataForm = ({ form, onSubmit }: any) => {
                     name="username"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Nombre de usuario</FormLabel>
+                            <FormLabel>Nombre de usuario *</FormLabel>
+                            <FormDescription>Usuario para el inicio de sesion en la app de gerentes</FormDescription>
                             <FormControl>
                                 <Input
                                     placeholder=""
@@ -97,7 +103,7 @@ export const ManagerDataForm = ({ form, onSubmit }: any) => {
                     name="password"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Clave</FormLabel>
+                            <FormLabel>Contraseña {formType === 'create' && '*'}</FormLabel>
                             <FormControl>
                                 <Input
                                     placeholder=""
@@ -109,7 +115,10 @@ export const ManagerDataForm = ({ form, onSubmit }: any) => {
                     )}
                 />
                 <div className="flex justify-end">
-                    <Button type="submit">Aceptar<Check /></Button>
+                    <Button type="submit">
+                        {formType === 'create' ? 'Crear' : 'Editar'}
+                        <Check />
+                    </Button>
                 </div>
             </form>
         </Form>

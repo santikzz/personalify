@@ -9,20 +9,18 @@ interface GlobalContextType {
     isAuthenticated: boolean;
     storeSession: (token: string) => void;
     clearSession: () => void;
-    onDuty: boolean;
-    setOnDuty: (onDuty: boolean) => void;
-    dutyClient: string,
+    lastClient: any,
+    setLastClient: (lastClient: any) => void;
 }
 
 const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider = ({ children }: PropsWithChildren) => {
 
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [user, setUser] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
-    const [onDuty, setOnDuty] = useState(false);
-    const [dutyClient, setDutyClient] = useState('');
+    const [loading, setLoading] = useState<boolean>(true);
+    const [lastClient, setLastClient] = useState<any | null>(null);
 
     useEffect(() => {
         const checkStoredSession = async () => {
@@ -43,10 +41,6 @@ export const GlobalProvider = ({ children }: PropsWithChildren) => {
             const self = await fetchSelf();
             setUser(self);
             setIsAuthenticated(true);
-
-            setOnDuty(self.on_shift != null);
-            setDutyClient(self.on_shift?.client_name);
-
             router.replace('/(tabs)');
         } catch (error) {
             clearSession();
@@ -58,9 +52,7 @@ export const GlobalProvider = ({ children }: PropsWithChildren) => {
         SecureStore.deleteItemAsync('token');
         setAuthToken(null);
         setUser(null);
-
-        setOnDuty(false);
-        setDutyClient('');
+        router.replace('/login');
     }
 
     if (loading) return <Text>loading...</Text>;
@@ -71,9 +63,8 @@ export const GlobalProvider = ({ children }: PropsWithChildren) => {
             isAuthenticated,
             storeSession,
             clearSession,
-            onDuty,
-            setOnDuty,
-            dutyClient
+            lastClient,
+            setLastClient,
         }}>
             {children}
         </GlobalContext.Provider>

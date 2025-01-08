@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom"
 import { useAlertDialog } from "@/components/useAlertDialog"
 import { ManagerDataForm } from "@/components/manager/manager-data-form"
 import { useCreateManager } from "@/hooks/queries/managers"
-import { useRandomPassword } from "@/hooks/use-random-password"
+// import { useRandomPassword } from "@/hooks/use-random-password"
 
 const formSchema = z.object({
     employee_id: z.string(),
@@ -66,7 +66,7 @@ export const ManagerCreatePage = () => {
             <AlertDialogComponent />
             <div className="mx-auto max-w-3xl">
                 <Label className="text-2xl font-semibold">Crear gerente</Label>
-                <ManagerDataForm form={form} onSubmit={onSubmit} />
+                <ManagerDataForm form={form} onSubmit={onSubmit} formType="create" />
             </div>
         </MainWrapper>
     );

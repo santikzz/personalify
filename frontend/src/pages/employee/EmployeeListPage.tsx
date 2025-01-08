@@ -9,6 +9,7 @@ import MainWrapper from "@/components/MainWrapper";
 import { useEmployees } from "@/hooks/queries/employees";
 import { Employee } from "@/types/Employee.types";
 import { InputSearch } from "@/components/InputSearch";
+import { Loader } from "@/components/loader";
 
 export const EmployeeListPage = () => {
 
@@ -19,7 +20,7 @@ export const EmployeeListPage = () => {
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
 
-    const { data: employees, isLoading: employeesLoading } = useEmployees();
+    const { data: employees, isLoading: isEmployeesLoading } = useEmployees();
 
     const columns: ColumnDef<Employee>[] = [
         {
@@ -102,7 +103,7 @@ export const EmployeeListPage = () => {
                                         colSpan={columns.length}
                                         className="h-24 text-center"
                                     >
-                                        Sin resultados.
+                                        {isEmployeesLoading ? <Loader /> : "Sin resultados."}
                                     </TableCell>
                                 </TableRow>
                             )}

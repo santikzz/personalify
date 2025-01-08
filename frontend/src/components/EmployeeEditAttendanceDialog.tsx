@@ -7,16 +7,15 @@ import { format } from "date-fns"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { CalendarIcon, Check, ChevronDown, Clock, PlusIcon } from "lucide-react";
+import { CalendarIcon, Check, ChevronDown, Edit, Trash } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-
 import { Button } from "@/components/ui/button"
 import { useClients } from "@/hooks/queries/clients"
 import { useManagers } from "@/hooks/queries/managers"
+import { useUpdateAttendance } from "@/hooks/queries/attendaces"
 import { useAlertDialog } from "./useAlertDialog"
-import { useCreateAttendance } from "@/hooks/queries/attendaces"
 
 const formSchema = z.object({
     max_work_minutes: z.string(),
@@ -27,40 +26,37 @@ const formSchema = z.object({
     client_id: z.string()
 });
 
-export const EmployeeNewAttendanceDialog = ({ employee, disabled }: { employee: string, disabled: boolean }) => {
+export const EmployeeEditAttendanceDialog = ({ attendance, disabled }: { attendance: any, disabled: boolean }) => {
 
     const { showDialog, AlertDialogComponent } = useAlertDialog();
 
-    const { data: clients, isLoading: clientsLoading } = useClients();
-    const { data: managers, isLoading: managersLoading } = useManagers();
-    const { mutate: createAttendance, isSuccess, isError } = useCreateAttendance(employee?.id);
+    const { data: clients } = useClients();
+    const { data: managers } = useManagers();
+    const { mutate: updateAttendance, isSuccess, isError } = useUpdateAttendance(attendance?.id);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            "max_work_minutes": '8',
-            "date": format(new Date(), "yyyy-MM-dd"),
-            // "check_in_time": format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
-            // "check_out_time": format(new Date(new Date().getTime() + 6 * 60 * 60 * 1000), "yyyy-MM-dd'T'HH:mm:ss"),
-            "check_in_time": "09:00",
-            "check_out_time": "15:00",
+            "max_work_minutes": Math.round(parseFloat(attendance.max_work_minutes) / 60).toString(),
+            "date": attendance.date,
+            "check_in_time": attendance.check_in_time,
+            "check_out_time": attendance.check_out_time,
+            "manager_id": attendance.manager_id,
+            "client_id": attendance.client_id
         },
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        // values['max_work_minutes'] = values['max_work_minutes'] * 60;
-        values['check_in_time'] = values['date'] + 'T' + values['check_in_time'] + ':00';
-        values['check_out_time'] = values['date'] + 'T' + values['check_out_time'] + ':00';
-        if(values['check_out_time'] < values['check_in_time']) {
-            showDialog({ title: "Error", description: "La hora de salida no puede ser menor a la hora de entrada", actionText: "Cerrar" });
-            return;
-        }
-        await createAttendance(values);
+        await updateAttendance(values);
+    }
+
+    const handleDeleteAttendance = () => {
+        // Delete attendance
     }
 
     useEffect(() => {
-        if (isError) showDialog({ title: "Ah ocurrido un error", description: "Error creando asistencia", actionText: "Cerrar" });
-        if (isSuccess) showDialog({ title: "Nueva asistencia", description: "Nueva asistencia con exito", actionText: "Cerrar" });
+        if (isError) showDialog({ title: "Ah ocurrido un error", description: "Error actualizando asistencia", actionText: "Cerrar" });
+        if (isSuccess) showDialog({ title: "Asistencia actualizada", description: "Asistencia actualizada exitosamente", actionText: "Cerrar" });
     }, [isError, isSuccess]);
 
     return (
@@ -68,13 +64,19 @@ export const EmployeeNewAttendanceDialog = ({ employee, disabled }: { employee: 
             <AlertDialogComponent />
             <Dialog>
                 <DialogTrigger asChild>
-                    <Button disabled={disabled}><Clock />Nueva asistencia</Button>
+                    <Button
+                        variant='secondary'
+                        className="h-6"
+                        disabled={disabled}
+                    >
+                        <Edit />Editar
+                    </Button>
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>Nueva asistencia</DialogTitle>
+                        <DialogTitle>Editar asistencia</DialogTitle>
                         <DialogDescription>
-                            Complete la siguiente informacion para agregar una nueva asistencia.
+                            Complete la siguiente informacion para modificar una asistencia.
                         </DialogDescription>
                     </DialogHeader>
 
@@ -161,7 +163,7 @@ export const EmployeeNewAttendanceDialog = ({ employee, disabled }: { employee: 
                                 name="check_out_time"
                                 render={({ field }) => (
                                     <FormItem className="flex flex-col">
-                                        <FormLabel>Hora de salida</FormLabel>
+                                        <FormLabel>Hora de salida *</FormLabel>
                                         <Input
                                             placeholder=""
                                             type="text"
@@ -286,8 +288,10 @@ export const EmployeeNewAttendanceDialog = ({ employee, disabled }: { employee: 
                                     </FormItem>
                                 )}
                             />
-
-                            <Button type="submit">Agregar <PlusIcon /></Button>
+                            <div className="flex flex-row gap-4 flex-1">
+                                <Button type="button" variant='destructive' className="flex-1" onClick={handleDeleteAttendance}>Eliminar <Trash/></Button>
+                                <Button type="submit" className="flex-1">Editar <Check /></Button>
+                            </div>
                         </form>
                     </Form>
                 </DialogContent>

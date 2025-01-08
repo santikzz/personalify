@@ -3,7 +3,23 @@ import { ring } from 'ldrs'
 
 ring.register()
 
-export default function ButtonLoader({ children, isLoading = false, loadingText = '', disabled, onClick = () => { }, className, ...props }) {
+interface ButtonLoaderProps {
+    children: React.ReactNode;
+    isLoading?: boolean;
+    loadingText?: string;
+    disabled?: boolean;
+    onClick?: () => void;
+    className?: string;
+}
+
+export default function ButtonLoader({ children,
+    isLoading = false,
+    loadingText = '',
+    disabled,
+    onClick = () => { },
+    className,
+    ...props }
+    : ButtonLoaderProps) {
     return (
         <Button
             className={`active:brightness-75 transition-all duration-100 ${className}`}

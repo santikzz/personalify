@@ -13,7 +13,7 @@ import { EmployeeDataForm } from "@/components/employee/employee-data-form"
 */
 const formSchema = z.object({
   name: z.string(),
-  qr_code: z.string(),
+  dni: z.string(),
 });
 
 export const EmployeeCreatePage = () => {
@@ -44,7 +44,7 @@ export const EmployeeCreatePage = () => {
     <MainWrapper>
       <div className="mx-auto max-w-3xl">
         <Label className="text-2xl font-semibold">Crear empleado</Label>
-        <EmployeeDataForm form={form} onSubmit={onSubmit} />
+        <EmployeeDataForm form={form} onSubmit={onSubmit} formType="create"/>
       </div>
     </MainWrapper>
   );

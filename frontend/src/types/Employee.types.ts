@@ -1,6 +1,7 @@
 export interface Employee {
     id: string;
     name: string;
+    dni: string;
     qr_code: string;
     created_at: string;
 }
@@ -19,6 +20,7 @@ export interface EmployeeAttendance {
     manager_name: string;
     client_id: string;
     client_name: string;
+    total_hours: string;
 }
 
 /*

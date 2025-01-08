@@ -40,7 +40,7 @@ export const ClientCreatePage = () => {
     <MainWrapper>
       <div className="mx-auto max-w-3xl">
         <Label className="text-2xl font-semibold">Crear cliente</Label>
-        <ClientDataForm form={form} onSubmit={onSubmit} />
+        <ClientDataForm form={form} onSubmit={onSubmit} formType="create" />
       </div>
     </MainWrapper>
   );

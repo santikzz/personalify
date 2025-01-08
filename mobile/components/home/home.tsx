@@ -6,10 +6,11 @@ import { Input } from '@/components/Input';
 import { useGlobalContext } from '@/context/GlobalContext';
 import { useEmployees } from '@/queries/employees';
 import { useLog } from '@/queries/manager';
+import { DataTable, Searchbar } from 'react-native-paper';
 
 export const Home = () => {
 
-    const { user, dutyClient } = useGlobalContext();
+    const { user } = useGlobalContext();
     const [search, setSearch] = useState('');
 
     const { data: searchEmployees, isLoading: isSearchLoading } = useEmployees(search);
@@ -24,15 +25,13 @@ export const Home = () => {
     return (
         <View>
 
-            <View className='py-4'>
+            <View className='pt-4'>
                 <Text className='text-2xl font-bold'>Bienvenido, {user?.name}</Text>
-                <Text className='text-base font'>{dutyClient}</Text>
             </View>
 
-            <View className='pb-4'>
-                <Input
-                    placeholder='Buscar empleado'
-                    className=''
+            <View className='py-4'>
+                <Searchbar
+                    placeholder='Buscar empleado ...'
                     value={search}
                     onChangeText={setSearch}
                 />
@@ -42,15 +41,15 @@ export const Home = () => {
                 <View>
                     <Text className='text-xl font-semibold text-neutral-600 py-4'>Resultados de la busqueda</Text>
                     {isSearchLoading && <Text className='text-base text-neutral-600 py-4'>Cargando...</Text>}
-                    <ScrollView className='flex flex-col'>
+                    <ScrollView style={style.searchList}>
                         {searchEmployees?.map((employee: any) => (
                             <TouchableOpacity
                                 key={employee?.id}
+                                style={style.searchRow}
                                 onPress={() => { router.push(`/employee/${employee?.id}`) }}
-                                className='flex flex-row justify-between border-t border-neutral-300 py-4'
                             >
-                                <Text className='text-base'>{employee?.name}</Text>
-                                <Text className='text-base'>{employee?.dni}</Text>
+                                <Text className='text-xl'>{employee?.name}</Text>
+                                <Text className='text-xl'>{employee?.dni}</Text>
                             </TouchableOpacity>
                         ))}
                     </ScrollView>
@@ -60,34 +59,22 @@ export const Home = () => {
             {!search && (
                 <View className='border rounded-md border-neutral-300 bg-white'>
 
-                    <View className='border-b border-neutral-300' style={style.logRow}>
-                        <Text className='font-bold flex-1'>Empleado</Text>
-                        <Text className='font-bold flex-1 text-right'>Entrada</Text>
-                        <Text className='font-bold flex-1 text-right'>Salida</Text>
-                    </View>
-
-                    <ScrollView className='flex flex-col gap-2'>
-
+                    <DataTable>
+                        <DataTable.Header>
+                            <DataTable.Title>Empleado</DataTable.Title>
+                            <DataTable.Title numeric>Entrada</DataTable.Title>
+                            <DataTable.Title numeric>Salida</DataTable.Title>
+                        </DataTable.Header>
                         {employeeLog?.map((log: any) => (
 
-                            <TouchableOpacity
-                                key={log?.employee_id}
-                                onPress={() => {
-                                    if (user?.employee_id != log?.employee_id) {
-                                        router.push(`/employee/${log?.employee_id}`)
-                                    }
-                                }}
-                                className='border-b border-neutral-300'
-                                style={style.logRow}
-                            >
-                                <Text className='flex-1 mr-4'>{log?.employee_name}</Text>
-                                <Text className='flex-1 text-right'>{formatTime(log?.check_in_time)}</Text>
-                                <Text className='flex-1 text-right'>{formatTime(log?.check_out_time)}</Text>
-                            </TouchableOpacity>
+                            <DataTable.Row key={log?.id} onPress={() => { router.push(`/employee/${log?.employee_id}`) }}>
+                                <DataTable.Cell>{log?.employee_name}</DataTable.Cell>
+                                <DataTable.Cell numeric>{formatTime(log?.check_in_time)}</DataTable.Cell>
+                                <DataTable.Cell numeric>{formatTime(log?.check_out_time)}</DataTable.Cell>
+                            </DataTable.Row>
 
                         ))}
-
-                    </ScrollView>
+                    </DataTable>
 
                 </View>
             )}
@@ -101,5 +88,17 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 16,
+    },
+    searchList: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    searchRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#d4d4d4',
     }
 })

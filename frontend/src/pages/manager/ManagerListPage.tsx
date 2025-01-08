@@ -9,6 +9,7 @@ import MainWrapper from "@/components/MainWrapper";
 import { InputSearch } from "@/components/InputSearch";
 import { useManagers } from "@/hooks/queries/managers";
 import { Manager } from "@/types/Manager.types";
+import { Loader } from "@/components/loader";
 
 export const ManagerListPage = () => {
 
@@ -19,7 +20,7 @@ export const ManagerListPage = () => {
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
 
-    const { data: managers, isLoading } = useManagers();
+    const { data: managers, isLoading: isManagersLoading } = useManagers();
 
     const columns: ColumnDef<Manager>[] = [
         {
@@ -102,7 +103,7 @@ export const ManagerListPage = () => {
                                         colSpan={columns.length}
                                         className="h-24 text-center"
                                     >
-                                        Sin resultados.
+                                        {isManagersLoading ? <Loader /> : "Sin resultados."}
                                     </TableCell>
                                 </TableRow>
                             )}

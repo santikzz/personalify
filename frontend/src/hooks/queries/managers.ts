@@ -45,6 +45,7 @@ export const useUpdateManager = (managerId: string) => {
         mutationFn: (employeeData: ManagerFormData) => updateManager(managerId, employeeData),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['managers'] });
+            queryClient.invalidateQueries({ queryKey: ['managers', managerId] });
         },
     });
 }

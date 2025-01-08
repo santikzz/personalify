@@ -1,8 +1,36 @@
-const toAvatarFallback = (strA, strB) => {
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'
+
+export const upperFirst = (string: string) => {
+    try {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    } catch (e) {
+        return string;
+    }
+}
+
+export const formatDate = (date: Date) => {
+    const dayOfWeek = upperFirst(format(date, 'EEEE', { locale: es }));
+    const day = format(date, 'dd', { locale: es });
+    const monthName = upperFirst(format(date, 'MMMM', { locale: es }));
+    const year = format(date, 'yyyy', { locale: es });
+
+    return `${dayOfWeek} ${day}, ${monthName} ${year}`;
+}
+
+export const toSnakeCase = (str: string): string => {
+    return str
+        .replace(/([a-z])([A-Z])/g, '$1_$2') // Add an underscore between lowercase and uppercase letters
+        .replace(/\s+/g, '_')               // Replace spaces with underscores
+        .replace(/-+/g, '_')                // Replace hyphens with underscores
+        .replace(/[^a-zA-Z0-9_]/g, '')      // Remove non-alphanumeric characters except underscores
+        .toLowerCase();                     // Convert the entire string to lowercase
+};
+export const toAvatarFallback = (strA: string, strB: string) => {
     return strA?.charAt(0).toUpperCase() + strB?.charAt(0).toUpperCase();
 };
 
-const formatTimeAgo = (timestamp) => {
+export const formatTimeAgo = (timestamp: number) => {
     const now = new Date();
     const time = new Date(timestamp);
     const diffInSeconds = Math.floor((now - time) / 1000);
@@ -27,7 +55,7 @@ const formatTimeAgo = (timestamp) => {
     }
 };
 
-const trimString = (str, maxLength) => {
+export const trimString = (str: string, maxLength: number) => {
     if (!str) {
         return "";
     }
@@ -36,5 +64,3 @@ const trimString = (str, maxLength) => {
     }
     return str.substring(0, maxLength) + '...';
 }
-
-export { toAvatarFallback, formatTimeAgo, trimString };

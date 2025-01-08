@@ -45,6 +45,7 @@ export const useUpdateEmployee = (employeeId: string) => {
         mutationFn: (employeeData: Employee) => updateEmployee(employeeId, employeeData),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['employees'] });
+            queryClient.invalidateQueries({ queryKey: ['employees', employeeId] });
         },
     });
 }

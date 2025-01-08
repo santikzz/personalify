@@ -16,8 +16,8 @@ class ManagerModel extends Model
 
     protected $validationRules = [
         'employee_id' => 'required|is_natural_no_zero',
-        'username' => 'required|valid_email|is_unique[manager.username]',
-        'password_hash' => 'required|min_length[8]',
+        'username' => 'required|is_unique[manager.username]',
+        // 'password_hash' => 'required|min_length[8]',
     ];
 
     protected $skipValidation = false;

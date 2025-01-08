@@ -8,12 +8,13 @@ import { StyleSheet, View } from 'react-native';
 
 export default function HomeScreen() {
 
-  const { user, onDuty } = useGlobalContext();
+  const { user } = useGlobalContext();
 
   return (
     <SafeAreaView style={styles.main}>
 
-      {!onDuty ? <Welcome /> : <Home />}
+      {/* {!onDuty ? <Welcome /> : <Home />} */}
+      <Home />
 
     </SafeAreaView>
   );

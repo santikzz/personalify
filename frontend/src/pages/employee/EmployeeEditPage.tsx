@@ -16,7 +16,7 @@ import { useAlertDialog } from "@/components/useAlertDialog"
 */
 const formSchema = z.object({
     name: z.string(),
-    qr_code: z.string(),
+    dni: z.string(),
 });
 
 export const EmployeeEditPage = () => {
@@ -41,7 +41,7 @@ export const EmployeeEditPage = () => {
         if (employee) {
             reset({
                 name: employee.name,
-                qr_code: employee.qr_code
+                dni: employee.dni
             });
         }
     }, [employee, reset]);
@@ -55,13 +55,13 @@ export const EmployeeEditPage = () => {
     }
 
     useEffect(() => {
-        if (isError) showDialog({ title: "Ah ocurrido un error", description: "Error editando empleado", actionText: "Cerrar", onAction: () => navigate("/personal") });
-        if (isSuccess) showDialog({ title: "Empleado actualizado", description: "Empleado actualizado exitosamente", actionText: "Cerrar", onAction: () => navigate("/personal") });
+        if (isError) showDialog({ title: "Ah ocurrido un error.", description: "Error editando empleado", actionText: "Cerrar", onAction: () => navigate(`/employee/${employee?.id}`) });
+        if (isSuccess) showDialog({ title: "Empleado actualizado.", description: "¡Empleado actualizado exitosamente!", actionText: "Cerrar", onAction: () => navigate(`/employee/${employee?.id}`) });
     }, [isError, isSuccess]);
 
     return (
         <MainWrapper>
-
+            <AlertDialogComponent />
             <div className="mx-auto max-w-3xl">
                 <Label className="text-2xl font-semibold">Editar empleado</Label>
                 {isEmployeeLoading ?
@@ -69,10 +69,9 @@ export const EmployeeEditPage = () => {
                         <Loader />
                     </div>
                     :
-                    <EmployeeDataForm form={form} onSubmit={onSubmit} />
+                    <EmployeeDataForm form={form} onSubmit={onSubmit} formType="edit"/>
                 }
             </div>
-
         </MainWrapper>
     );
 }

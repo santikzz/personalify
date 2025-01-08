@@ -9,6 +9,9 @@ import { EmployeeNewInvoiceDialog } from "@/components/EmployeeNewInvoiceDialog"
 import { Employee, EmployeeAttendance } from "@/types/Employee.types";
 import { useAttendances } from "@/hooks/queries/attendaces";
 import { Loader } from "../loader";
+import { Button } from "../ui/button";
+import { Edit } from "lucide-react";
+import { EmployeeEditAttendanceDialog } from "../EmployeeEditAttendanceDialog";
 
 export function AttendanceTable({ employee }: { employee: Employee }) {
 
@@ -62,17 +65,41 @@ export function AttendanceTable({ employee }: { employee: Employee }) {
         {
             header: "Entrada",
             accessorKey: "check_in_time",
-            cell: (row) => format(row.getValue(), 'HH:mm'),
+            cell: (row) => {
+                if (row.getValue()) {
+                    try {
+                        return format(row.getValue(), 'HH:mm')
+                    }
+                    catch (e) {
+                        return "Invalid date";
+                    }
+                } else {
+                    return "--"
+                }
+            },
         },
         {
             header: "Salida",
             accessorKey: "check_out_time",
-            cell: (row) => format(row.getValue(), 'HH:mm'),
+            cell: (row) => {
+                if (row.getValue()) {
+                    try {
+                        return format(row.getValue(), 'HH:mm')
+                    }
+                    catch (e) {
+                        return "Invalid date";
+                    }
+                } else {
+                    return "--"
+                }
+            },
         },
         {
             header: "Horas totales",
-            accessorKey: "worked_minutes",
-            cell: (row) => (row.getValue() / 60),
+            accessorKey: "total_hours",
+            cell: (row) => (<>
+                {row.getValue() ? `${row.getValue()} hs` : "--"}
+            </>),
         },
         {
             header: "Gerente",
@@ -84,6 +111,15 @@ export function AttendanceTable({ employee }: { employee: Employee }) {
             accessorKey: "client_name",
             cell: (row) => row.getValue(),
         },
+        {
+            header: "",
+            accessorKey: "id",
+            cell: (row) => (
+                <div className="flex gap-2">
+                    <EmployeeEditAttendanceDialog attendance={row.row.original} disabled={row.row.original.billed == '1'} />
+                </div>
+            ),
+        }
     ];
 
     const table = useReactTable({
@@ -95,8 +131,10 @@ export function AttendanceTable({ employee }: { employee: Employee }) {
     return (
         <>
             <div className="flex gap-2 px-2 pb-2">
+        
+
                 <EmployeeNewInvoiceDialog employee={employee} days={selectedRows} disabled={selectedRows.length == 0 || attendancesLoading} />
-                <EmployeeNewAttendanceDialog employee={employee?.id} disabled={attendancesLoading} />
+                <EmployeeNewAttendanceDialog employee={employee} disabled={attendancesLoading} />
             </div>
 
             {attendancesLoading ?

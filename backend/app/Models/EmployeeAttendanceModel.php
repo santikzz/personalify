@@ -20,7 +20,8 @@ class EmployeeAttendanceModel extends Model
         'worked_minutes',
         'manager_id',
         'client_id',
-        'billed'
+        'billed',
+        'invoice_id'
     ];
 
     protected $validationRules = [
@@ -32,7 +33,8 @@ class EmployeeAttendanceModel extends Model
         'worked_minutes' => 'permit_empty|is_natural',
         'manager_id' => 'required|is_natural_no_zero',
         'client_id' => 'required|is_natural_no_zero',
-        'billed' => 'permit_empty|in_list[0,1]' // 0 = not billed, 1 = billed
+        'billed' => 'permit_empty|in_list[0,1]', // 0 = not billed, 1 = billed
+        'invoice_id' => 'permit_empty|is_natural_no_zero'
     ];
 
     protected $skipValidation = false;

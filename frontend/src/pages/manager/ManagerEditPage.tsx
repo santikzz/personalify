@@ -8,19 +8,20 @@ import { useNavigate, useParams } from "react-router-dom"
 import { useAlertDialog } from "@/components/useAlertDialog"
 import { ManagerDataForm } from "@/components/manager/manager-data-form"
 import { useManager, useUpdateManager } from "@/hooks/queries/managers"
-import { useRandomPassword } from "@/hooks/use-random-password"
+import { Loader } from "@/components/loader"
+// import { useRandomPassword } from "@/hooks/use-random-password"
 
 const formSchema = z.object({
     employee_id: z.string(),
     username: z.string(),
-    password: z.string(),
-    disabled: z.string(),
+    password: z.string().optional(),
+    // disabled: z.string(),
 });
 
 export const ManagerEditPage = () => {
 
     const { managerId } = useParams();
-    const { data: manager, isLoading } = useManager(managerId);
+    const { data: manager, isLoading: isManagerLoading } = useManager(managerId);
     const { mutate: updateManager, isSuccess, isError } = useUpdateManager(managerId);
 
     const navigate = useNavigate();
@@ -30,7 +31,6 @@ export const ManagerEditPage = () => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
     });
-
 
     /*
     * useEffect() will be called when the manager from useManager() is loaded
@@ -66,7 +66,13 @@ export const ManagerEditPage = () => {
             <AlertDialogComponent />
             <div className="mx-auto max-w-3xl">
                 <Label className="text-2xl font-semibold">Editar gerente</Label>
-                <ManagerDataForm form={form} onSubmit={onSubmit} />
+                {isManagerLoading ?
+                    <div className="flex justify-center">
+                        <Loader />
+                    </div>
+                    :
+                    <ManagerDataForm form={form} onSubmit={onSubmit} formType="edit" />
+                }
             </div>
         </MainWrapper>
     );

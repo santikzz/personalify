@@ -4,9 +4,10 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { MD3LightTheme, PaperProvider } from 'react-native-paper';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+// import { useColorScheme } from '@/hooks/useColorScheme';
 import '../global.css';
 import { GlobalProvider } from '@/context/GlobalContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -15,7 +16,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  // const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -30,10 +31,19 @@ export default function RootLayout() {
     return null;
   }
 
+  const theme = {
+    ...MD3LightTheme,
+    // roundness: 2,
+    colores: {
+      ...MD3LightTheme.colors,
+    },
+  };
+
   const queryClient = new QueryClient();
 
   return (
-    <ThemeProvider value={DefaultTheme}>
+    // <ThemeProvider value={DefaultTheme}>
+    <PaperProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <GlobalProvider>
           <Stack>
@@ -45,6 +55,7 @@ export default function RootLayout() {
           <StatusBar style='dark' backgroundColor='#ffffff' />
         </GlobalProvider>
       </QueryClientProvider>
-    </ThemeProvider>
+    </PaperProvider>
+    // </ThemeProvider>
   );
 }

@@ -57,8 +57,8 @@ export const ClientEditPage = () => {
     <MainWrapper>
       <AlertDialogComponent />
       <div className="mx-auto max-w-3xl">
-        <Label className="text-2xl font-semibold">Crear cliente</Label>
-        <ClientDataForm form={form} onSubmit={onSubmit} />
+        <Label className="text-2xl font-semibold">Editar cliente</Label>
+        <ClientDataForm form={form} onSubmit={onSubmit} formType="edit" />
       </div>
     </MainWrapper>
   );

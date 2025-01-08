@@ -48,6 +48,7 @@ CREATE TABLE `employee_attendance` (
   `manager_id` int(11),
   `client_id` int(11),
   `billed` tinyint(1) NOT NULL DEFAULT 0,
+  `invoice_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 

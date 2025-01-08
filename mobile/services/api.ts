@@ -29,7 +29,7 @@ export const authenticate = async (userdata: ManagerCredentials) => {
         const { token } = response.data;
         return token;
     }
-    return false;
+    return null;
 }
 
 /*

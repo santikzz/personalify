@@ -11,7 +11,7 @@ export const Welcome = () => {
     const { user } = useGlobalContext();
 
     const [search, setSearch] = useState('');
-    const [modalOpen, setModalOpen] = useState(true);
+    const [modalOpen, setModalOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState(null);
 
     const { data: clients, isLoading: isClientsLoading } = useClients();
@@ -54,11 +54,8 @@ export const Welcome = () => {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-            {/* 
-            <Button onPress={handleStartDuty}>
-                Iniciar jornada
-            </Button> */}
 
+            
         </View>
     );
 }

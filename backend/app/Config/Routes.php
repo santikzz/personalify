@@ -54,6 +54,10 @@ $routes->group('api', function ($routes) {
         $routes->put('clients/(:num)', 'ClientController::update/$1');                                              // Update client
         $routes->delete('clients/(:num)', 'ClientController::delete/$1');                                           // Delete client by id
 
+        $routes->put('attendance/(:num)', 'EmployeeAttendanceController::update/$1');                               // Update attendance record by id
+
+        $routes->get('log', 'EmployeeAttendanceController::log');
+
     });
 
     /**
@@ -63,9 +67,9 @@ $routes->group('api', function ($routes) {
 
         $routes->get('self', 'ManagerController::self');
 
-        $routes->get('log', 'ManagerController::log');
-        $routes->post('checkin', 'ManagerController::checkin');
-        $routes->post('checkout', 'ManagerController::checkout');
+        $routes->get('log', 'EmployeeAttendanceController::log');
+        $routes->post('checkin', 'EmployeeAttendanceController::checkin');
+        $routes->post('checkout', 'EmployeeAttendanceController::checkout');
 
         $routes->get('employees', 'EmployeeController::index');
         $routes->get('employee/(:num)', 'EmployeeController::show/$1');
