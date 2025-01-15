@@ -11,10 +11,15 @@ import { FileDown, FileText } from 'lucide-react'
 import { Employee } from "@/types/Employee.types"
 import { useInvoices } from "@/hooks/queries/invoices"
 import { Loader } from "../loader"
+import { API_URL } from "@/services/api"
 
 export function InvoiceTable({ employee }: { employee: Employee }) {
 
     const { data: invoices, isLoading } = useInvoices(employee?.id);
+
+    const handleExportPdf = (invoiceId: string) => {
+        window.open(`${API_URL}/api/invoices/export/${invoiceId}`, '_blank', 'noopener,noreferrer');
+    }
 
     return (
         <>
@@ -42,7 +47,7 @@ export function InvoiceTable({ employee }: { employee: Employee }) {
                                     <TableCell>{Number(invoice.total_worked_minutes) / 60} hs</TableCell>
                                     <TableCell>${invoice.price_per_hour}/h</TableCell>
                                     <TableCell>${invoice.total}</TableCell>
-                                    <TableCell className="max-w-10"><Button variant='secondary'><FileDown /> Exportar PDF</Button></TableCell>
+                                    <TableCell><Button variant='secondary' onClick={() => { handleExportPdf(invoice.id) }}><FileDown /> Exportar PDF</Button></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

@@ -4,7 +4,7 @@ import { Employee } from '@/types/Employee.types';
 import { Manager, ManagerFormData } from '@/types/Manager.types';
 import axios from 'axios';
 
-const API_URL: string = 'http://192.168.0.13:8080';
+export const API_URL: string = 'http://192.168.0.13:8080';
 
 const axiosApi = axios.create({
     baseURL: API_URL,

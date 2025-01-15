@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\EmployeeInvoiceModel;
 use App\Models\EmployeeAttendanceModel;
+use App\Helpers\PdfHelper;
 
 class EmployeeInvoiceController extends BaseController
 {
@@ -112,6 +113,43 @@ class EmployeeInvoiceController extends BaseController
         } catch (\Exception $e) {
             // Rollback transaction if something fails
             $db->transRollback();
+            return $this->response->setJSON(['message' => $e->getMessage()])->setStatusCode(500);
+        }
+    }
+
+    public function getInvoicePdf($invoiceId = null)
+    {
+        try {
+            // $invoice = $this->model->find($invoiceId);
+            $employeeAttendancesModel = new EmployeeAttendanceModel();
+
+            $invoice = $this->model
+                ->select(
+                    'employee_invoice.*, 
+                    employee.name as employee_name, 
+                    employee.dni as employee_dni'
+                )
+                ->join('employee', 'employee.id = employee_invoice.employee_id', 'left')
+                ->where('employee_invoice.id', $invoiceId)
+                ->find();
+
+            $attendances = $employeeAttendancesModel->select('employee_attendance.*, client.name as client_name')
+                ->join('client', 'client.id = employee_attendance.client_id', 'left')
+                ->where('invoice_id', $invoiceId)
+                ->findAll();
+
+            if (!$invoice || !$attendances) {
+                return $this->response->setStatusCode(404)->setJSON(['message' => 'Invoice not found']);
+            }
+
+            $invoice = $invoice[0];
+            $invoice['total_hours'] = round($invoice['total_worked_minutes'] / 60, 2);
+
+            // return $this->response->setJSON($attendances)->setStatusCode(200);
+            $pdf = PdfHelper::generatePdfInvoice($invoice, $attendances);
+            return $this->response->setJSON($pdf)->setStatusCode(200);
+
+        } catch (\Exception $e) {
             return $this->response->setJSON(['message' => $e->getMessage()])->setStatusCode(500);
         }
     }

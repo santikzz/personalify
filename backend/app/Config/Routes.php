@@ -21,6 +21,8 @@ $routes->group('api', function ($routes) {
     $routes->post('manager/register', 'AuthController::reigsterManager');
     $routes->post('manager/login', 'AuthController::managerLogin');
 
+    $routes->get('invoices/export/(:num)', 'EmployeeInvoiceController::getInvoicePdf/$1');
+
     /**
      * Group routes for administrators - /api/admin
      */
@@ -58,6 +60,7 @@ $routes->group('api', function ($routes) {
 
         $routes->get('log', 'EmployeeAttendanceController::log');
 
+        // $routes->get('invoices/export/(:num)', 'EmployeeInvoiceController::getInvoicePdf/$1');
     });
 
     /**
@@ -76,6 +79,5 @@ $routes->group('api', function ($routes) {
         $routes->get('employee/dni/(:num)', 'EmployeeController::showByDni/$1');
 
         $routes->get('clients', 'ClientController::index');
-
     });
 });

@@ -1,8 +1,6 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
-import { Input } from '@/components/Input';
-
 import { useGlobalContext } from '@/context/GlobalContext';
 import { useEmployees } from '@/queries/employees';
 import { useLog } from '@/queries/manager';
@@ -58,24 +56,22 @@ export const Home = () => {
 
             {!search && (
                 <View className='border rounded-md border-neutral-300 bg-white'>
-
                     <DataTable>
                         <DataTable.Header>
                             <DataTable.Title>Empleado</DataTable.Title>
                             <DataTable.Title numeric>Entrada</DataTable.Title>
                             <DataTable.Title numeric>Salida</DataTable.Title>
                         </DataTable.Header>
+                        {isLogLoading && <Text className='text-center py-4'>Cargando...</Text>}
+                        {employeeLog?.length == 0 && <Text className='text-center py-4'>Sin entradas.</Text>}
                         {employeeLog?.map((log: any) => (
-
                             <DataTable.Row key={log?.id} onPress={() => { router.push(`/employee/${log?.employee_id}`) }}>
                                 <DataTable.Cell>{log?.employee_name}</DataTable.Cell>
                                 <DataTable.Cell numeric>{formatTime(log?.check_in_time)}</DataTable.Cell>
                                 <DataTable.Cell numeric>{formatTime(log?.check_out_time)}</DataTable.Cell>
                             </DataTable.Row>
-
                         ))}
                     </DataTable>
-
                 </View>
             )}
         </View>

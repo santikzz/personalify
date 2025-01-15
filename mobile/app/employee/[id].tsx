@@ -96,6 +96,7 @@ export default function EmployeeScreen() {
     useEffect(() => {
         if (checkInSuccess) {
             Alert.alert('Entrada registrada');
+            router.replace('/(tabs)');
         }
         if (checkInError) {
             Alert.alert('Error', 'No se pudo registrar la entrada');
@@ -105,6 +106,7 @@ export default function EmployeeScreen() {
     useEffect(() => {
         if (checkOutSuccess) {
             Alert.alert('Salida registrada');
+            router.replace('/(tabs)');
         }
         if (checkOutError) {
             Alert.alert('Error', 'No se pudo registrar la salida');
